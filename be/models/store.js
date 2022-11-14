@@ -1,9 +1,10 @@
-import { Schema } from "mongoose";
-const Schema = mongoose.Schema;
+import mongoose from "mongoose";
+const { Schema } = mongoose;
 
-const StoreSchema = new Schema (
+const StoreSchema = new Schema(
   {
     storename: { type: String, require: true },
+    manager: { type: String, require: false },
     storeadress: { type: String, require: true },
     openingdate: { type: Date, require: true },
     taxcode: { type: String, require: true },

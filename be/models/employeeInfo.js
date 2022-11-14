@@ -1,5 +1,5 @@
-import { Schema } from "mongoose";
-const Schema = mongoose.Schema;
+import mongoose from "mongoose";
+const { Schema } = mongoose;
 
 const EmployeeInfoSchema = new Schema(
   {
@@ -7,7 +7,7 @@ const EmployeeInfoSchema = new Schema(
     fullname: { type: String, require: true },
     contact: {
       email: { type: String, require: false },
-      phonenumber: { type: String, require: true},
+      phonenumber: { type: String, require: true },
     },
     dateofbirth: { type: String, require: true },
     identitycardid: { type: String, require: true },
@@ -15,9 +15,21 @@ const EmployeeInfoSchema = new Schema(
     startdatework: { type: Date, require: false },
     enddatework: { type: Date, require: false },
     salary: { type: Number, require: true },
-    storeid: { type: Number, require: true },
-    deparmentid: { type: Number, require: true },
-    shiftid: { type: Number, require: true },
+    storeid: {
+      type: mongoose.Types.ObjectId,
+      required: true,
+      ref: "hrm_store",
+    },
+    departmentid: {
+      type: mongoose.Types.ObjectId,
+      required: true,
+      ref: "hrm_department",
+    },
+    shiftid: {
+      type: mongoose.Types.ObjectId,
+      required: true,
+      ref: "hrm_shift",
+    },
     taxcode: { type: String, require: false },
     passwork: { type: String, require: true },
     isactive: { type: Boolean, require: true, default: true },

@@ -1,5 +1,5 @@
-import { Schema } from "mongoose";
-const Schema = mongoose.Schema;
+import mongoose from "mongoose";
+const { Schema } = mongoose;
 
 const PositionSchema = new Schema (
   {

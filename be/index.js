@@ -5,6 +5,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import fs from "fs";
 import path from "path";
+import employeeInfoRouter from "./routes/employeeInfoRoute.js";
 
 dotenv.config();
 
@@ -24,6 +25,8 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use("api/EmployeeInfo", employeeInfoRouter)
+
 app.use((error, req, res, next) => {
   if (req.file) {
     fs.unlink(req.file.path, (err) => {
@@ -40,7 +43,7 @@ app.use((error, req, res, next) => {
 
 const PORT = process.env.PORT || 5000;
 mongoose
-  .connect("mongodb+srv://admin:admin@kltn-vmh-2022.mfknv98.mongodb.net/test", {
+  .connect(process.env.CONNECTION_STRING, {
     useCreateIndex: true,
     useFindAndModify: false,
     useNewUrlParser: true,
