@@ -6,5 +6,5 @@ const ShiftSchema = new Schema({
   isactive: { type: Boolean, require: true, default: true },
 });
 
-const IShift = mongoose.model("mwg_shift", ShiftSchema);
+const IShift = mongoose.model("hrm_shift", ShiftSchema);
 export default IShift;

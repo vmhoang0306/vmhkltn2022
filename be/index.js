@@ -4,8 +4,8 @@ import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
 import fs from "fs";
-import path from "path";
 import employeeInfoRouter from "./routes/employeeInfoRoute.js";
+import shiftRouter from "./routes/shiftRouter.js";
 
 dotenv.config();
 
@@ -15,7 +15,7 @@ app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 app.use(cors());
 
-app.use((req, res, next) => {
+app.use((_req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
     "Access-Control-Allow-Headers",
@@ -25,7 +25,8 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("api/EmployeeInfo", employeeInfoRouter)
+app.use("/api/employeeinfo", employeeInfoRouter);
+app.use("/api/shift", shiftRouter)
 
 app.use((error, req, res, next) => {
   if (req.file) {
