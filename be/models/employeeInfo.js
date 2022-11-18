@@ -15,17 +15,17 @@ const EmployeeInfoSchema = new Schema(
     startdatework: { type: Date, require: false },
     enddatework: { type: Date, require: false },
     salary: { type: Number, require: true },
-    storeid: {
+    store: {
       type: mongoose.Types.ObjectId,
       required: true,
       ref: "hrm_store",
     },
-    departmentid: {
+    department: {
       type: mongoose.Types.ObjectId,
       required: true,
       ref: "hrm_department",
     },
-    shiftid: {
+    shift: {
       type: mongoose.Types.ObjectId,
       required: true,
       ref: "hrm_shift",

@@ -44,7 +44,7 @@ app.use((error, req, res, next) => {
 
 const PORT = process.env.PORT || 5000;
 mongoose
-  .connect(process.env.CONNECTION_STRING, {
+  .connect(process.env.CONNECTION_STRING_CLOUD, {
     useCreateIndex: true,
     useFindAndModify: false,
     useNewUrlParser: true,
