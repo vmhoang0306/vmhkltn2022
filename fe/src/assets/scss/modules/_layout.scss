@@ -1,0 +1,201 @@
+// For main layout
+.ant-layout-sider-children {
+  min-height: 100vh !important;
+}
+
+.ant-layout-sider-trigger {
+  background: $primary  !important;
+}
+
+.ant-layout-sider-children {
+  background: $white  !important;
+}
+// Text
+.text-align-center {
+  text-align: center !important;
+}
+.text-align-center {
+  text-align: end !important;
+}
+
+// 
+@mixin flex-direction-row() {
+  display: flex !important;
+  flex-direction: row !important;
+}
+
+@mixin flex-direction-column() {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+@mixin make-width-height() {
+  @for $i from 0 through 100 {
+    .w-#{$i} {
+      width: $i * 1% !important;
+    }
+
+    .h-#{$i} {
+      height: $i * 1% !important;
+    }
+
+    .min-height-#{$i} {
+      min-height: $i * 1% !important;
+    }
+
+    .max-height-#{$i} {
+      max-height: $i * 1% !important;
+    }
+
+    .min-width-#{$i} {
+      min-width: $i * 1% !important;
+    }
+
+    .max-width-#{$i} {
+      max-width: $i * 1% !important;
+    }
+
+    .min-height-#{$i}vh {
+      min-height: #{$i}vh !important;
+    }
+
+    .max-height-#{$i}vh {
+      max-height: #{$i}vh !important;
+    }
+
+    .min-width-#{$i}vw {
+      min-width: #{$i}vw !important;
+    }
+
+    .max-width-#{$i}vw {
+      max-width: #{$i}vw !important;
+    }
+  }
+
+  @for $i from 10 to 1000px {
+    .min-height-#{$i}px {
+      min-height: #{$i}px !important;
+    }
+
+    .max-height-#{$i}px {
+      max-height: #{$i}px !important;
+    }
+
+    .min-width-#{$i}px {
+      min-width: #{$i}px !important;
+    }
+
+    .max-width-#{$i}px {
+      max-width: #{$i}px !important;
+    }
+  }
+}
+
+.d-flex {
+  display: flex !important;
+}
+
+.flex-center {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+.justify-content-center {
+  justify-content: center !important;
+}
+
+.justify-content-flex-end{
+  justify-content: flex-end !important;
+}
+
+.flex-direction-column {
+  flex-direction: column !important;
+}
+
+.flex-direction-row {
+  flex-direction: row !important;
+}
+
+.align-items-center {
+  align-items: center !important;
+}
+
+.align-items-flex-end {
+  align-items: flex-end !important;
+}
+
+.align-items-baseline {
+  align-items: baseline !important;
+}
+
+.justify-content-space-between {
+  justify-content: space-between !important;
+}
+
+.display-none {
+  display: none;
+}
+
+.divider {
+  border-color: #e2e2e2;
+  border-style: solid none none;
+  border-width: 1px 0px 0px;
+  display: flex;
+  width: 95%;
+  margin: 0 auto;
+}
+
+
+// loading 
+
+  @-webkit-keyframes follow-the-leader {
+    0% {
+      -webkit-transform: rotate(0deg) translateY(-200%);
+              transform: rotate(0deg) translateY(-200%); }
+    60%,
+    100% {
+      -webkit-transform: rotate(360deg) translateY(-200%);
+              transform: rotate(360deg) translateY(-200%); } }
+  @keyframes follow-the-leader {
+    0% {
+      -webkit-transform: rotate(0deg) translateY(-200%);
+              transform: rotate(0deg) translateY(-200%); }
+    60%,
+    100% {
+      -webkit-transform: rotate(360deg) translateY(-200%);
+              transform: rotate(360deg) translateY(-200%); } }
+  
+  .follow-the-leader-line {
+    height: 14px;
+    position: relative;
+    width: 14px; }
+    .follow-the-leader-line div {
+      -webkit-animation: follow-the-leader 1.25s infinite backwards;
+              animation: follow-the-leader 1.25s infinite backwards;
+      background-color: #0077b6;
+      border-radius: 100%;
+      height: 100%;
+      width: 100%; }
+      .follow-the-leader-line div:nth-child(1) {
+        -webkit-animation-delay: 0.15s;
+                animation-delay: 0.15s;
+        background-color: rgba(0,119,182,0.9) }
+      .follow-the-leader-line div:nth-child(2) {
+        -webkit-animation-delay: 0.3s;
+                animation-delay: 0.3s;
+        background-color: rgba(0,119,182,0.8); }
+      .follow-the-leader-line div:nth-child(3) {
+        -webkit-animation-delay: 0.45s;
+                animation-delay: 0.45s;
+        background-color: rgba(0,119,182,0.7); }
+      .follow-the-leader-line div:nth-child(4) {
+        -webkit-animation-delay: 0.6s;
+                animation-delay: 0.6s;
+        background-color: rgba(0,119,182,0.6); }
+      .follow-the-leader-line div:nth-child(5) {
+        -webkit-animation-delay: 0.75s;
+                animation-delay: 0.75s;
+        background-color: rgba(0,119,182,0.5); }
+
+@include make-width-height();

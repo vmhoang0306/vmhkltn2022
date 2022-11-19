@@ -1,0 +1,106 @@
+@mixin make-spacing() {
+  @include make-spacing-unit(0, 0rem);
+  @include make-spacing-unit(1, 0.5rem);
+  @include make-spacing-unit(2, 1rem);
+  @include make-spacing-unit(3, 1.25rem);
+  @include make-spacing-unit(4, 1.5rem);
+  @include make-spacing-unit(5, 3rem);
+  @include make-spacing-unit(auto, auto);
+}
+
+.space {
+  &-flex-end {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: flex-end !important;
+  }
+}
+
+@mixin make-spacing-form() {
+  @for $i from 0 through 10 {
+    .form-row-gap-#{$i} {
+      @include flex-direction-column();
+      row-gap: #{$i}rem !important;
+    }
+    //gap
+    .row-gap-#{$i} {
+      row-gap: #{$i}rem !important;
+    }
+    .column-gap-#{$i} {
+      column-gap: #{$i}rem !important;
+    }
+  }
+}
+
+@mixin make-spacing-unit($size, $unit) {
+  // Margin
+  .m-#{$size} {
+    margin: $unit !important;
+  }
+
+  .mx-#{$size} {
+    margin-right: $unit !important;
+    margin-left: $unit !important;
+  }
+
+  .my-#{$size} {
+    margin-top: $unit !important;
+    margin-bottom: $unit !important;
+  }
+
+  .mt-#{$size} {
+    margin-top: $unit !important;
+  }
+
+  .mb-#{$size} {
+    margin-bottom: $unit !important;
+  }
+
+  .ms-#{$size} {
+    margin-left: $unit !important;
+  }
+
+  .me-#{$size} {
+    margin-right: $unit !important;
+  }
+
+  // padding
+  .p-#{$size} {
+    padding: $unit !important;
+  }
+
+  .px-#{$size} {
+    padding-right: $unit !important;
+    padding-left: $unit !important;
+  }
+
+  .py-#{$size} {
+    padding-top: $unit !important;
+    padding-bottom: $unit !important;
+  }
+
+  .pt-#{$size} {
+    padding-top: $unit !important;
+  }
+
+  .pb-#{$size} {
+    padding-bottom: $unit !important;
+  }
+
+  .ps-#{$size} {
+    padding-left: $unit !important;
+  }
+
+  .pe-#{$size} {
+    padding-right: $unit !important;
+  }
+}
+
+@include make-spacing-form();
+// Usage
+// form-row-gap-1 -> have a flex-layout with row-gap: 1rem
+// }
+
+@include make-spacing();
+// Usage
+// mt-1 -> means margin-top: .25rem;

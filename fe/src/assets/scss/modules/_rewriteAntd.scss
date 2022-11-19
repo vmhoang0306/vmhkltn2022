@@ -1,0 +1,108 @@
+#menuFeature1 {
+  // display: flex;
+  align-items: center;
+  // background: $primary;
+  // color: $light;
+  // background-color: rgb(65, 132, 190);
+  // position: sticky;
+  top: 50px;
+  // z-index: 9999;
+
+  // @media (max-width: 900px) {
+  //   flex-direction: column;
+  //   height: 93px;
+  //   padding: 10px;
+  // }
+  box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 6px 16px 0 rgba(0, 0, 0, 0.08),
+    0 9px 28px 8px rgba(0, 0, 0, 0.05) !important;
+  // box-shadow: inset;
+  // .ant-menu-root{
+  //   box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05) !important;
+  // }
+  .ant-dropdown-menu-submenu-title {
+    padding-top: 15px;
+    padding-bottom: 15px;
+    width: 256px;
+    // max-width: 400px;
+    // background: $primary;
+    // color: $light;
+    .ant-dropdown-menu-item {
+      padding-top: 15px;
+      padding-bottom: 15px;
+      width: 256px;
+      // max-width: 400px;
+      // background: $primary;
+      // color: $light;
+    }
+  }
+}
+// .ant-menu-root.ant-menu-vertical
+
+.custom-header {
+  .ant-drawer-content-wrapper {
+    right: 40px;
+    margin-top: 50px;
+  }
+  .ant-drawer-body {
+    padding: 5px;
+  }
+}
+
+.ant-notification.ant-notification-topRight {
+  margin-top: 3.25rem !important;
+}
+
+// Datepicker
+.ant-picker-cell-inner {
+  width: 100% !important;
+}
+.ant-picker-cell-in-view.ant-picker-cell-selected .ant-picker-cell-inner,
+.ant-picker-cell-in-view.ant-picker-cell-range-start .ant-picker-cell-inner,
+.ant-picker-cell-in-view.ant-picker-cell-range-end .ant-picker-cell-inner {
+  width: 100% !important;
+  background-color: $primary !important;
+}
+//table column
+// .ant-table-container table > thead > tr:first-child th:last-child {
+// text-align: center!important;
+// }
+
+//Menu
+.ant-menu-submenu-title {
+  display: flex !important;
+  align-items: center !important;
+}
+.ant-menu-overflow-item.ant-menu-item {
+  display: flex !important;
+  align-items: center !important;
+}
+.ant-menu-item {
+  display: flex !important;
+  align-items: center !important;
+}
+// Spacing
+// .ant-space-item {
+//   width: 100% !important;
+// }
+//Table Antd
+.ant-table-thead {
+  tr {
+    th {
+      padding: 5px;
+      font-weight: bold !important;
+      color: #595959;
+    }
+  }
+}
+
+.ant-table-tbody {
+  tr {
+    td {
+      padding: 5px;
+    }
+  }
+}
+.ant-image-preview-body {
+  position: absolute!important;
+  top: 50px!important;
+}

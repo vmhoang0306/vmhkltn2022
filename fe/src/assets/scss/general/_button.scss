@@ -1,0 +1,88 @@
+$radius-button: 3px;
+
+@mixin make-color-button-ui() {
+  @each $key,
+  $value in $colors {
+    @if $key == 'warning'{
+       // For button default
+      .#{'btn-ui-' + $key} {
+        background-color: $value !important;
+        color: #ffff !important;
+        border-color: $value !important;
+        border-radius: $radius-button !important;
+        &:hover{
+          background-color: $white !important;
+          color: $value !important;
+        }
+      }
+      .#{'btn-ui-' + $key + '-hv-not-allowed'} {
+        background-color: $value !important;
+        color: $grey !important;
+        border-color: $value !important;
+        border-radius: $radius-button !important;
+      }
+      .#{'btn-ui-text-' + $key} {
+        background-color: transparent !important;
+        color: $value !important;
+        border-color: transparent !important;
+        border-radius: transparent !important;
+        &:hover{
+          background-color: transparent !important;
+          color: $value !important;
+        }
+      }
+      .#{'btn-ui-default-'+$key}{
+        color: $value !important;
+        border-color: $value !important;
+        border-radius: $radius-button !important;
+      }
+    }
+    @else{
+      .#{'btn-ui-' + $key} {
+        background-color: $value !important;
+        color: $white !important;
+        border-color: $value !important;
+        border-radius: $radius-button !important;
+        &:hover{
+          background-color: $white !important;
+          color: $value !important;
+        }
+      }
+      .#{'btn-ui-text-' + $key} {
+        background-color: transparent !important;
+        color: $value !important;
+        border-color: transparent !important;
+        border-radius: transparent !important;
+        &:hover{
+          background-color: transparent !important;
+          color: $value !important;
+        }
+      }
+      .#{'btn-ui-default-'+$key}{
+        color: $value !important;
+        border-color: $value !important;
+        border-radius: $radius-button !important;
+      }
+         
+    }
+
+    //For button Dashed 
+    .#{'btn-ui-dashed-' + $key} {
+      // background-color: $value !important;
+      color: $default !important;
+      border-color: $value !important;
+      border-radius: $radius-button !important;
+      &:hover{
+        background-color: $white !important;
+        color: $value !important;
+        border-color: $value !important;
+      }
+    }
+  }
+}
+
+@include  make-color-button-ui();
+
+// Usage
+// btn-ui-{...} is using for type button like primary
+// btn-ui-default-{...} is using for default

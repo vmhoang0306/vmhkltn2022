@@ -1,0 +1,22 @@
+.img-bg-homepage {
+  width: 700px;
+  @include mobile {
+    width: 95% !important;
+  }
+  @include tablet {
+    width: 70% !important;
+  }
+}
+
+.wrapper-contain-hompage {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  @include mobile {
+    flex-direction: column;
+  }
+  @include tablet {
+    flex-direction: column;
+  }
+}

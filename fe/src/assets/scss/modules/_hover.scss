@@ -1,0 +1,9 @@
+.hv{
+  &-not-allowed{
+    cursor: not-allowed !important;
+  }
+  &-textui-link{
+    cursor: pointer !important;
+    text-decoration: underline !important;
+  }
+}

@@ -1,0 +1,18 @@
+@mixin make-color() {
+  @each $key,
+  $value in $colors {
+    .#{'txt-' + $key} {
+      color: $value !important;
+    }
+    .#{'txt-' + $key + '--hover'} {
+      &:hover{
+        color: $value !important;
+      }
+    }
+    .#{'bg-' + $key} {
+      background: $value !important;
+    }
+  }
+}
+
+@include make-color();
