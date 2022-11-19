@@ -4,13 +4,18 @@ import React from "react";
 import Background from "../../assets/images/background-homepage.png";
 import EmptyCardNoHeader from "../../components/card/EmptyCardNoHeader";
 import { ButtonUI, TitleUI } from "../../components/general";
-import { EncryptHelper } from "../../utils/EncrytCode";
+import { Utils } from "../../utils/utils";
 
 function LoginPage() {
   const [form] = Form.useForm();
 
+  const handleLogin = () => {
+    form.submit();
+  }
+
   const handleFinish = () => {
-    console.log(EncryptHelper.enCode('03062001VmH'));
+    console.log(Utils.enCode('03062001VmH'));
+    console.log(Utils.deCode(Utils.enCode('03062001VmH')));
   };
 
   return (
@@ -83,7 +88,7 @@ function LoginPage() {
                   <Divider className="mt-0" />
 
                   <Form.Item className="d-flex justify-content-center">
-                    <ButtonUI text="Đăng nhập" icon={<LoginOutlined />} />
+                    <ButtonUI text="Đăng nhập" icon={<LoginOutlined />} onClick={handleLogin}/>
                   </Form.Item>
                 </Form>
               }
