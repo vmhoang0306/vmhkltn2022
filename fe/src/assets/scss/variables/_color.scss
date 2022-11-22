@@ -4,31 +4,35 @@ $green-5: #1fd15d;
 $black: #111;
 $grey: #484545;
 // For typography (
-$default: #2D3748;
+$default: #2d3748;
 $light: #fff;
-// 
+//
 
-$primary: #4184be  ;
-$primary-light: #90E0EF;
-$primary-dark: #0077B6;
-$primary-10: #CAF0F8;
-$primary-20: #ADE8F4;
-$primary-30: #90E0EF;
-$primary-40: #48CAE4;
-$primary-50: #00B4D8;
-$primary-60: #00B4D8;
-$primary-70: #4184be ;
-$primary-80: #0077B6;
-$primary-90: #023E8A;
-$primary-100: #03045E;
-$primary-linear: linear-gradient(89.92deg, rgba(0, 150, 199, 0.85) 0.76%, rgba(0, 150, 199, 0.65) 99.98%);
+$primary: #4184be;
+$primary-light: #90e0ef;
+$primary-dark: #0077b6;
+$primary-10: #caf0f8;
+$primary-20: #ade8f4;
+$primary-30: #90e0ef;
+$primary-40: #48cae4;
+$primary-50: #00b4d8;
+$primary-60: #00b4d8;
+$primary-70: #4184be;
+$primary-80: #0077b6;
+$primary-90: #023e8a;
+$primary-100: #03045e;
+$primary-linear: linear-gradient(
+  89.92deg,
+  rgba(0, 150, 199, 0.85) 0.76%,
+  rgba(0, 150, 199, 0.65) 99.98%
+);
 
 //Color button
 $warning: #fdb833;
 
 $danger: #e74040;
-$success: #40916C;
-$secondary: #6C757D;
+$success: #40916c;
+$secondary: #6c757d;
 $violet: #757bc8;
 $colors: (
   white: $white,
@@ -51,7 +55,7 @@ $colors: (
   primary-90: $primary-90,
   primary-100: $primary-100,
   primary-linear: $primary-linear,
-    
+
   warning: $warning,
 
   danger: $danger,

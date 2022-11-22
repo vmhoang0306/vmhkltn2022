@@ -1,18 +1,18 @@
 import { LoginOutlined } from "@ant-design/icons";
 import { Col, Divider, Form, Input, Row, Space } from "antd";
-import React, { useContext } from "react";
+import axios from "axios";
+import React, { useContext, useState } from "react";
 import Background from "../../assets/images/background-homepage.png";
 import EmptyCardNoHeader from "../../components/card/EmptyCardNoHeader";
 import { ButtonUI, TitleUI } from "../../components/general";
 import { Notify } from "../../helpers";
-import { useHttpClient } from "../../hook/useHttpClient";
 import { Utils } from "../../utils/utils";
 import { AuthContext } from "./Context/AuthContext";
 
 function LoginPage() {
   const [form] = Form.useForm();
-  const { isLoading, sendRequest } = useHttpClient();
   const authInfo = useContext(AuthContext);
+  const [requesting, setRequesting] = useState(false);
 
   const handleLogin = () => {
     form.submit();
@@ -20,19 +20,23 @@ function LoginPage() {
 
   const handleFinish = async () => {
     const url = "http://localhost:5000/api/auth/login";
-    const data = JSON.stringify({
+    const data = {
       username: form.getFieldValue("username"),
       password: Utils.enCode(form.getFieldValue("password")),
-    });
+    };
 
-    const res = await sendRequest(url, "POST", data, {
-      "Content-Type": "application/json",
-    });
+    setRequesting(true);
+    const res = await axios.post(url, data);
+    console.log(res);
 
-    if (res.status === "success"){
+    if (res.data.status === "success") {
       Notify.success("", res.message ? res.message : "Đăng nhập thành công!");
       authInfo.login(res.username);
+    } else {
+      Notify.error("", res.message ? res.message : "Xảy ra lỗi!");
+      setRequesting(false);
     }
+    setRequesting(false);
   };
 
   return (
@@ -69,7 +73,7 @@ function LoginPage() {
                   className="form-row-gap-0"
                 >
                   <Form.Item className="d-flex justify-content-center">
-                    <TitleUI text="Login" level={1} className="mt-1" />
+                    <TitleUI text="Đăng nhập" level={1} className="mt-1" />
                   </Form.Item>
 
                   <Divider className="mt-0" />
@@ -109,7 +113,7 @@ function LoginPage() {
                       text="Đăng nhập"
                       icon={<LoginOutlined />}
                       onClick={handleLogin}
-                      loading={isLoading}
+                      loading={requesting}
                     />
                   </Form.Item>
                 </Form>

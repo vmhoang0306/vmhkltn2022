@@ -1,5 +1,7 @@
+import EmployeeInfo from "../components/EmployeeInfo";
+
 function EmployeeInfoPage() {
-  return <></>;
+  return <EmployeeInfo />;
 }
 
 export default EmployeeInfoPage;
