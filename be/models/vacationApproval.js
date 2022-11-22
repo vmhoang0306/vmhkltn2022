@@ -16,7 +16,7 @@ const VacationApprovalSchema = new Schema(
 );
 
 const IVacationApproval = mongoose.model(
-  "hrm_vacation_approval",
+  "vacation_approval",
   VacationApprovalSchema
 );
 export default IVacationApproval;

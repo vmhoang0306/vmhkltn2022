@@ -6,6 +6,7 @@ import dotenv from "dotenv";
 import fs from "fs";
 import employeeInfoRouter from "./routes/employeeInfoRoute.js";
 import shiftRouter from "./routes/shiftRouter.js";
+import authRouter from "./routes/authRoute.js";
 
 dotenv.config();
 
@@ -27,6 +28,7 @@ app.use((_req, res, next) => {
 
 app.use("/api/employeeinfo", employeeInfoRouter);
 app.use("/api/shift", shiftRouter)
+app.use("/api/auth", authRouter)
 
 app.use((error, req, res, next) => {
   if (req.file) {

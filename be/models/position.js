@@ -8,5 +8,5 @@ const PositionSchema = new Schema (
   }
 );
 
-const IPosition = mongoose.model("mwg_positions", PositionSchema);
+const IPosition = mongoose.model("positions", PositionSchema);
 export default IPosition;

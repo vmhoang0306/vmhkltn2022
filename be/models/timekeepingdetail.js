@@ -5,18 +5,14 @@ const TimekeepingDetailSchema = new Schema({
   username: {
     type: mongoose.Types.ObjectId,
     required: true,
-    ref: "hrm_employeeinfo",
+    ref: "employeeinfo",
   },
-  atmonth: {
+  timekeeping: {
     type: mongoose.Types.ObjectId,
     require: true,
-    ref: "mwg_timekeeping",
-  },
-  atyear: {
-    type: mongoose.Types.ObjectId,
-    require: true,
-    ref: "mwg_timekeeping",
+    ref: "timekeeping",
   },
   ischeck: { type: Boolean, require: true },
   hour: { type: Float, require: true },
+  date: { type: Number, require: true },
 });

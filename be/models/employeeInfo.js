@@ -18,17 +18,17 @@ const EmployeeInfoSchema = new Schema(
     store: {
       type: mongoose.Types.ObjectId,
       required: true,
-      ref: "hrm_store",
+      ref: "store",
     },
     department: {
       type: mongoose.Types.ObjectId,
       required: true,
-      ref: "hrm_department",
+      ref: "department",
     },
     shift: {
       type: mongoose.Types.ObjectId,
       required: true,
-      ref: "hrm_shift",
+      ref: "shift",
     },
     taxcode: { type: String, require: false },
     passwork: { type: String, require: true },
@@ -45,7 +45,7 @@ const EmployeeInfoSchema = new Schema(
   }
 );
 
-const IEmployeeInfo = mongoose.model("hrm_employeeinfo", EmployeeInfoSchema);
+const IEmployeeInfo = mongoose.model("employeeinfo", EmployeeInfoSchema);
 export default IEmployeeInfo;
 
 

@@ -15,5 +15,5 @@ const StoreSchema = new Schema(
   }
 );
 
-const IStore = mongoose.model("mwg_store", StoreSchema);
+const IStore = mongoose.model("store", StoreSchema);
 export default IStore;

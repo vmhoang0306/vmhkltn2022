@@ -1,21 +1,38 @@
 import { LoginOutlined } from "@ant-design/icons";
 import { Col, Divider, Form, Input, Row, Space } from "antd";
-import React from "react";
+import React, { useContext } from "react";
 import Background from "../../assets/images/background-homepage.png";
 import EmptyCardNoHeader from "../../components/card/EmptyCardNoHeader";
 import { ButtonUI, TitleUI } from "../../components/general";
+import { Notify } from "../../helpers";
+import { useHttpClient } from "../../hook/useHttpClient";
 import { Utils } from "../../utils/utils";
+import { AuthContext } from "./Context/AuthContext";
 
 function LoginPage() {
   const [form] = Form.useForm();
+  const { isLoading, sendRequest } = useHttpClient();
+  const authInfo = useContext(AuthContext);
 
   const handleLogin = () => {
     form.submit();
-  }
+  };
 
-  const handleFinish = () => {
-    console.log(Utils.enCode('03062001VmH'));
-    console.log(Utils.deCode(Utils.enCode('03062001VmH')));
+  const handleFinish = async () => {
+    const url = "http://localhost:5000/api/auth/login";
+    const data = JSON.stringify({
+      username: form.getFieldValue("username"),
+      password: Utils.enCode(form.getFieldValue("password")),
+    });
+
+    const res = await sendRequest(url, "POST", data, {
+      "Content-Type": "application/json",
+    });
+
+    if (res.status === "success"){
+      Notify.success("", res.message ? res.message : "Đăng nhập thành công!");
+      authInfo.login(res.username);
+    }
   };
 
   return (
@@ -68,7 +85,7 @@ function LoginPage() {
                     ]}
                     className="w-100 min-width-300px"
                   >
-                    <Input placeholder="Tên đăng nhập ..."/>
+                    <Input placeholder="Tên đăng nhập ..." />
                   </Form.Item>
 
                   <Form.Item
@@ -82,13 +99,18 @@ function LoginPage() {
                     ]}
                     className="w-100 min-width-300px"
                   >
-                    <Input.Password  placeholder="Mật khẩu ..."/>
+                    <Input.Password placeholder="Mật khẩu ..." />
                   </Form.Item>
 
                   <Divider className="mt-0" />
 
                   <Form.Item className="d-flex justify-content-center">
-                    <ButtonUI text="Đăng nhập" icon={<LoginOutlined />} onClick={handleLogin}/>
+                    <ButtonUI
+                      text="Đăng nhập"
+                      icon={<LoginOutlined />}
+                      onClick={handleLogin}
+                      loading={isLoading}
+                    />
                   </Form.Item>
                 </Form>
               }

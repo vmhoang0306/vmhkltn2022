@@ -11,5 +11,5 @@ const TimekeepingSchema = new Schema(
   }
 );
 
-const ITimekeeping = mongoose.model("mwg_timekeeping", TimekeepingSchema);
+const ITimekeeping = mongoose.model("timekeeping", TimekeepingSchema);
 export default ITimekeeping;

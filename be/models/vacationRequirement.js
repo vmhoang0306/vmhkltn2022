@@ -17,7 +17,7 @@ const VacationRequirementSchema = new Schema(
 );
 
 const IVacationRequirement = mongoose.model(
-  "hrm_vacation_requirement",
+  "vacation_requirement",
   VacationRequirementSchema
 );
 export default IVacationRequirement;

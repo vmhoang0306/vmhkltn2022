@@ -53,7 +53,7 @@ export const getAllEmployeeInfo = async (req, res) => {
 
     res.status(200).json(listEmployeeInfo);
   } catch (error) {
-    res.status(400).json({message: error.message})
+    res.status(400).json({ message: error.message });
   }
 };
 
@@ -63,7 +63,7 @@ export const getInfoById = async (req, res) => {
 
   let info;
   try {
-    info = await IEmployeeInfo.findOne({username: username});
+    info = await IEmployeeInfo.findOne({ username: username });
   } catch {
     return res
       .status(400)
@@ -78,7 +78,7 @@ export const getInfoById = async (req, res) => {
   res.json({ info: info.toObject({ getters: true }) });
 };
 
-//CREATE 
+//CREATE
 export const createEmployeeInfo = async (req, res) => {
   try {
     const {
@@ -95,7 +95,7 @@ export const createEmployeeInfo = async (req, res) => {
   }
 };
 
-//DELETE 
+//DELETE
 export const deleteEmployeeInfo = async (req, res) => {
   try {
     await IEmployeeInfo.findByIdAndDelete(req.params.id);
@@ -105,7 +105,7 @@ export const deleteEmployeeInfo = async (req, res) => {
   }
 };
 
-//UPDATE 
+//UPDATE
 export const updateEmployeeInfo = async (req, res) => {
   try {
     const {
