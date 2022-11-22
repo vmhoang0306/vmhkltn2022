@@ -1,4 +1,3 @@
-import { BackTop } from "antd";
 import { useCallback, useState } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import HeaderComponent from "./components/layout/Header";
@@ -44,7 +43,6 @@ function App() {
           <>
             <HeaderComponent />
             {routes}
-            <BackTop />
           </>
         ) : (
           <LoginPage />
