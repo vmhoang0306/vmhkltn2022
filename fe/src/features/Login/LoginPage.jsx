@@ -2,7 +2,7 @@ import { LoginOutlined } from "@ant-design/icons";
 import { Col, Divider, Form, Input, Row, Space } from "antd";
 import axios from "axios";
 import React, { useContext, useState } from "react";
-import Background from "../../assets/images/background-homepage.png";
+import Background from "../../assets/images/background-homepage.jpg";
 import EmptyCardNoHeader from "../../components/card/EmptyCardNoHeader";
 import { ButtonUI, TitleUI } from "../../components/general";
 import { Notify } from "../../helpers";
@@ -27,11 +27,10 @@ function LoginPage() {
 
     setRequesting(true);
     const res = await axios.post(url, data);
-    console.log(res);
 
     if (res.data.status === "success") {
       Notify.success("", res.message ? res.message : "Đăng nhập thành công!");
-      authInfo.login(res.username);
+      authInfo.login(data.username);
     } else {
       Notify.error("", res.message ? res.message : "Xảy ra lỗi!");
       setRequesting(false);

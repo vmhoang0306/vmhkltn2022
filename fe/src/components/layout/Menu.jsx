@@ -1,3 +1,4 @@
+import { MenuOutlined, UserOutlined } from "@ant-design/icons";
 import { Menu } from "antd";
 import React from "react";
 import { Link } from "react-router-dom";
@@ -16,23 +17,26 @@ function MenuComponent(props) {
     };
   }
 
-  const listTreeMenu = [
+  const listMobile = [
     getItem(
       <Link to={PAGE_URL.EMPLOYEEINFO}>Thông tin nhân viên</Link>,
       "employeeinfo",
-      null,
+      <UserOutlined />,
       null,
       null
     ),
+    getItem("test1", "test1", null, null, null),
+    getItem("test2", "test2", null, null, null),
+    getItem("test3", "test3", null, null, null),
+    getItem("test4", "test4", null, null, null),
+  ];
+
+  const listWeb = [
     getItem(
-      "test1",
-      "test1",
-      null,
-      [
-        getItem("test2", "test2", null, null, null),
-        getItem("test3", "test3", null, null, null),
-        getItem("test4", "test4", null, null, null),
-      ],
+      "Menu chức năng",
+      "menu",
+      <MenuOutlined />,
+      listMobile,
       null
     ),
   ];
@@ -46,13 +50,13 @@ function MenuComponent(props) {
           mode={mode}
           onClick={closeMenu}
           style={{ height: "100%", borderRight: 0, padding: 0 }}
-          items={listTreeMenu}
+          items={listWeb}
         />
       ) : (
         <>
           <Menu
             id="menuFeature"
-            items={listTreeMenu}
+            items={listMobile}
             onClick={closeMenu}
             mode={mode}
             style={{ height: "100%", borderRight: 0, padding: 5 }}

@@ -4,15 +4,15 @@ import { Drawer, Tooltip } from "antd";
 import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { PAGE_URL } from "../../constant/route";
-import MenuComponent from "../../features/common/Menu";
 import { AuthContext } from "../../features/Login/Context/AuthContext";
+import MenuComponent from "./Menu";
 
 const HeaderComponent = () => {
   const [visible, setVisible] = useState(false);
 
   const authInfo = useContext(AuthContext);
   const handleLogout = () => {
-    authInfo.logout();
+    authInfo.logout(authInfo.userinfo);
   };
 
   const showDrawer = () => {
