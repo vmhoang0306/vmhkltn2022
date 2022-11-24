@@ -1,5 +1,6 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
+import { BreadcrumbUI } from "./components/general";
 import HeaderComponent from "./components/layout/Header";
 import { PAGE_URL } from "./constant/route";
 import EmployeeInfoPage from "./features/EmployeeInfo/EmployeeInfo/pages/EmployeeInfoPage";
@@ -10,11 +11,17 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState();
 
+  useEffect(() => {
+    document.title = "MWG | HRM";
+    window.scrollTo(0, 0);
+  }, []);
+
   const setCookie = (uid, isLogin) => {
     var d = new Date();
     d.setTime(d.getTime() + 30 * 60 * 1000);
     var expires =
-      "expires=" + (isLogin ? d.toUTCString() : "Thu, 01 Jan 1970 00:00:00 UTC");
+      "expires=" +
+      (isLogin ? d.toUTCString() : "Thu, 01 Jan 1970 00:00:00 UTC");
     document.cookie =
       "username=" +
       (uid === null || uid === undefined ? "" : uid) +
@@ -64,13 +71,19 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const routes = (
+  const routes = checkCookie() ? (
     <Switch>
-      <Route patch={PAGE_URL.EMPLOYEEINFO} exact>
+      <Redirect from="/" to={PAGE_URL.EMPLOYEEINFO.INFO} exact />
+
+      <Route patch={PAGE_URL.EMPLOYEEINFO.INFO} exact>
         <EmployeeInfoPage />
       </Route>
-
-      <Redirect from="/" to={PAGE_URL.EMPLOYEEINFO} exact />
+    </Switch>
+  ) : (
+    <Switch>
+      <Route patch="/">
+        <LoginPage />
+      </Route>
     </Switch>
   );
 
@@ -87,6 +100,7 @@ function App() {
         {checkCookie() ? (
           <div>
             <HeaderComponent />
+            <BreadcrumbUI />
             <div className="px-5 py-2">{routes}</div>
           </div>
         ) : (
