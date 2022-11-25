@@ -5,22 +5,27 @@ import {
   Route,
   Switch,
   useHistory,
+  withRouter
 } from "react-router-dom";
 import { BreadcrumbUI } from "./components/general";
 import HeaderComponent from "./components/layout/Header";
 import { PAGE_URL } from "./constant/route";
+import PageNotFound from "./features/common/PageNotFound";
 import EmployeeInfoPage from "./features/EmployeeInfo/EmployeeInfo/pages/EmployeeInfoPage";
 import EmployeeInfoFindPage from "./features/EmployeeInfo/EmployeeInfoFind/pages/EmployeeInfoFindPage";
 import { AuthContext } from "./features/Login/Context/AuthContext";
 import LoginPage from "./features/Login/LoginPage";
 
 function App() {
-  const [username, setUsername] = useState();
   const history = useHistory();
+  const [username, setUsername] = useState();
+
   useEffect(() => {
-    document.title = "MWG | HRM";
-    window.scrollTo(0, 0);
-  }, []);
+    if (!checkCookie()) {
+      history.push("/login");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [window.location.pathname]);
 
   const setCookie = (uid, isLogin) => {
     var d = new Date();
@@ -65,28 +70,41 @@ function App() {
   const login = useCallback((uid) => {
     setUsername(uid);
     setCookie(uid, true);
-
+    history.push(PAGE_URL.EMPLOYEEINFO.INFO);
+    window.location.reload();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const logout = useCallback(() => {
     setUsername(null);
     setCookie(null, false);
-    history.push("/");
+    history.push("/login");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const routes = (
+  const routes = checkCookie() ? (
     <Switch>
-      <Redirect from="/" to={PAGE_URL.EMPLOYEEINFO.INFO} exact />
+      <Route
+        exact
+        path={PAGE_URL.EMPLOYEEINFO.FIND}
+        component={withRouter(EmployeeInfoFindPage)}
+      />
+      <Route
+        exact
+        path={PAGE_URL.EMPLOYEEINFO.INFO}
+        component={withRouter(EmployeeInfoPage)}
+      />
 
-      <Route patch={PAGE_URL.EMPLOYEEINFO.FIND} exact>
-        <EmployeeInfoFindPage />
-      </Route>
+      <Redirect exact from="/" to={PAGE_URL.EMPLOYEEINFO.INFO} />
 
-      <Route patch={PAGE_URL.EMPLOYEEINFO.INFO} exact>
-        <EmployeeInfoPage />
-      </Route>
+      <Route component={withRouter(PageNotFound)} />
+    </Switch>
+  ) : (
+    <Switch>
+      <Route exact path="/login" component={withRouter(LoginPage)} />
+      <Route component={withRouter(PageNotFound)} />
+
+      <Redirect exact to="/login" />
     </Switch>
   );
 

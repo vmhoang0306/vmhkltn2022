@@ -9,6 +9,7 @@ import { ButtonUI, TitleUI } from "../../components/general";
 import { PAGE_URL } from "../../constant/route";
 import { Notify } from "../../helpers";
 import { Utils } from "../../utils/utils";
+import LoadingFullWidth from "../common/LoadingFullWidth";
 import { AuthContext } from "./Context/AuthContext";
 
 function LoginPage() {
@@ -54,7 +55,11 @@ function LoginPage() {
             xs={24}
             className="d-flex justify-content-center"
           >
-            <img src={Background} alt="" className="img-bg-homepage" />
+            {!requesting ? (
+              <img src={Background} alt="" className="img-bg-homepage" />
+            ) : (
+              <LoadingFullWidth />
+            )}
           </Col>
 
           <Col

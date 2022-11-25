@@ -25,6 +25,13 @@ function MenuComponent(props) {
       null,
       null
     ),
+    getItem(
+      <Link to={PAGE_URL.EMPLOYEEINFO.INFO}>Thông tin nhân viên</Link>,
+      "employeeinfo/info",
+      <UserOutlined />,
+      null,
+      null
+    )
   ];
 
   const listMobile = [
