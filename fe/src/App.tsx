@@ -5,7 +5,7 @@ import {
   Route,
   Switch,
   useHistory,
-  withRouter
+  withRouter,
 } from "react-router-dom";
 import { BreadcrumbUI } from "./components/general";
 import HeaderComponent from "./components/layout/Header";
@@ -18,7 +18,7 @@ import LoginPage from "./features/Login/LoginPage";
 
 function App() {
   const history = useHistory();
-  const [username, setUsername] = useState();
+  const [username, setUsername] = useState<string>("");
 
   useEffect(() => {
     if (!checkCookie()) {
@@ -27,17 +27,13 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [window.location.pathname]);
 
-  const setCookie = (uid, isLogin) => {
+  const setCookie = (uid: string, isLogin: boolean) => {
     var d = new Date();
     d.setTime(d.getTime() + 30 * 60 * 1000);
     var expires =
       "expires=" +
       (isLogin ? d.toUTCString() : "Thu, 01 Jan 1970 00:00:00 UTC");
-    document.cookie =
-      "username=" +
-      (uid === null || uid === undefined ? "" : uid) +
-      "; " +
-      expires;
+    document.cookie = "username=" + uid + "; " + expires;
   };
 
   const getCookie = () => {
@@ -67,7 +63,7 @@ function App() {
     }
   };
 
-  const login = useCallback((uid) => {
+  const login = useCallback((uid: string) => {
     setUsername(uid);
     setCookie(uid, true);
     history.push(PAGE_URL.EMPLOYEEINFO.INFO);
@@ -76,8 +72,8 @@ function App() {
   }, []);
 
   const logout = useCallback(() => {
-    setUsername(null);
-    setCookie(null, false);
+    setUsername("");
+    setCookie("", false);
     history.push("/login");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -112,7 +108,7 @@ function App() {
     <BrowserRouter>
       <AuthContext.Provider
         value={{
-          userinfo: username,
+          username: username,
           login: login,
           logout: logout,
         }}
@@ -120,8 +116,10 @@ function App() {
         {checkCookie() ? (
           <div>
             <HeaderComponent />
-            <BreadcrumbUI />
-            <div className="px-5 py-2">{routes}</div>
+            <div className="px-5 py-2">
+              <BreadcrumbUI />
+              {routes}
+            </div>
           </div>
         ) : (
           <LoginPage />

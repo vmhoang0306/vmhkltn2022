@@ -8,7 +8,7 @@ import EmptyCardNoHeader from "../../components/card/EmptyCardNoHeader";
 import { ButtonUI, TitleUI } from "../../components/general";
 import { PAGE_URL } from "../../constant/route";
 import { Notify } from "../../helpers";
-import { Utils } from "../../utils/utils";
+import { Utils } from "../../utils";
 import LoadingFullWidth from "../common/LoadingFullWidth";
 import { AuthContext } from "./Context/AuthContext";
 
@@ -30,14 +30,14 @@ function LoginPage() {
     };
 
     setRequesting(true);
-    const res = await axios.post(url, data);
+    const res: any = await axios.post(url, data);
 
     if (res.data.status === "success") {
-      Notify.success("", res.message ? res.message : "Đăng nhập thành công!");
+      Notify.success("", res.data.message ? res.data.message : "Đăng nhập thành công!");
       authInfo.login(data.username);
       history.push(PAGE_URL.EMPLOYEEINFO.INFO);
     } else {
-      Notify.error("", res.message ? res.message : "Xảy ra lỗi!");
+      Notify.error("", res.data.message ? res.message : "Xảy ra lỗi!");
       setRequesting(false);
     }
     setRequesting(false);

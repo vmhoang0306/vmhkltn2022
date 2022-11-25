@@ -46,7 +46,7 @@ export function TitleUI(props: TitleUIProps): JSX.Element {
   return (
     <Typography.Title
       level={level}
-      className={`mb-0 ${className} txt-${type}`}
+      className={`mb-0 mt-0 ${className} txt-${type}`}
       italic={italic}
       copyable={copyable}
     >
