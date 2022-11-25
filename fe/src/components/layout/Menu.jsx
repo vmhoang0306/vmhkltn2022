@@ -36,7 +36,7 @@ function MenuComponent(props) {
 
   const listMobile = [
     getItem(
-      <span className="me-1">Quản lý thông tin nhân viên</span>,
+      <span className="me-2">Quản lý thông tin nhân viên</span>,
       "employeeinfo",
       <UserOutlined />,
       menuEmployeeInfo,

@@ -75,6 +75,7 @@ function App() {
     setUsername("");
     setCookie("", false);
     history.push("/login");
+    window.location.reload();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

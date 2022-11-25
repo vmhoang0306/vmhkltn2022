@@ -1,10 +1,11 @@
 import {
   DeleteOutlined,
-  EditFilled, SearchOutlined
+  EditOutlined,
+  SearchOutlined,
 } from "@ant-design/icons";
 import { Col, DatePicker, Form, Input, Row, Select, Space, Table } from "antd";
 import locale from "antd/es/date-picker/locale/vi_VN";
-import moment from "moment";
+import dayjs from "dayjs";
 import React from "react";
 import { ButtonUI, TextUI, TitleUI } from "../../../../components/general";
 import { Utils } from "../../../../utils";
@@ -14,6 +15,7 @@ const { Option } = Select;
 function EmployeeInfoFind() {
   const [form] = Form.useForm();
   const today = new Date();
+  const DATE_FORMAT = "DD/MM/YYYY";
 
   const columns = [
     {
@@ -83,7 +85,7 @@ function EmployeeInfoFind() {
       render: (_text: string, _record: any) => {
         return (
           <Space className="w-100 d-flex justify-content-flex-end">
-            <ButtonUI color="primary" icon={<EditFilled />} />
+            <ButtonUI color="primary" icon={<EditOutlined />} />
 
             <ButtonUI color="danger" icon={<DeleteOutlined />} />
           </Space>
@@ -126,11 +128,16 @@ function EmployeeInfoFind() {
                   <Col xl={12} lg={12} md={12} sm={12} xs={12}>
                     <Form.Item className="m-0" name="fromdate">
                       <DatePicker
-                        locale={locale}
-                        format="DD/MM/YYYY"
+                        // locale={locale}
+                        format={DATE_FORMAT}
                         placeholder="Từ ngày"
                         className="w-100 min-width-100px"
-                        defaultValue={moment(Utils.date.getTheOlddate(today, 7))}
+                        defaultValue={dayjs(
+                          Utils.date.getDate(
+                            Utils.date.getTheOlddate(today, 7)
+                          ),
+                          DATE_FORMAT
+                        )}
                       />
                     </Form.Item>
                   </Col>
@@ -139,10 +146,13 @@ function EmployeeInfoFind() {
                     <Form.Item className="m-0" name="todate">
                       <DatePicker
                         locale={locale}
-                        format="DD/MM/YYYY"
+                        format={DATE_FORMAT}
                         placeholder="Đến ngày"
                         className="w-100 min-width-100px"
-                        defaultValue={moment(today)}
+                        defaultValue={dayjs(
+                          Utils.date.getDate(today),
+                          DATE_FORMAT
+                        )}
                       />
                     </Form.Item>
                   </Col>
@@ -167,7 +177,15 @@ function EmployeeInfoFind() {
               </Form.Item>
             </Col>
 
-            <Col xl={6} lg={8} md={24} sm={24} xs={24}>
+            <Col
+              xl={6}
+              lg={8}
+              md={24}
+              sm={24}
+              xs={24}
+              className="d-flex justify-content-flex-end"
+              style={{ marginBottom: "24px" }}
+            >
               <ButtonUI icon={<SearchOutlined />} text="Tìm" />
             </Col>
 

@@ -5,12 +5,24 @@ import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { PAGE_URL } from "../../constant/route";
 import { AuthContext } from "../../features/Login/Context/AuthContext";
+import { TextUI } from "../general";
+import { ModalConfirm } from "../modules";
 import MenuComponent from "./Menu";
 
 const HeaderComponent = () => {
   const [visible, setVisible] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const authInfo = useContext(AuthContext);
+
+  const handleCancel = () => {
+    setShowConfirm(false)
+  }
+  
+  const handleConfirm = () => {
+    setShowConfirm(true)
+  }
+
   const handleLogout = () => {
     authInfo.logout(authInfo.userinfo);
   };
@@ -43,7 +55,7 @@ const HeaderComponent = () => {
       </div>
 
         <Tooltip placement="bottomRight" title="Đăng xuất" color="#e74040">
-          <LogoutOutlined style={{ color: "#fff" }} onClick={handleLogout} />
+          <LogoutOutlined style={{ color: "#fff" }} onClick={handleConfirm} />
         </Tooltip>
 
       <Drawer
@@ -56,6 +68,15 @@ const HeaderComponent = () => {
       >
         <MenuComponent closeMenu={() => onClose()} mode="inline" />
       </Drawer>
+      <ModalConfirm
+        setVisible={setShowConfirm}
+        visible={showConfirm}
+        width={600}
+        htmlTypeBtnConfirm="button"
+        handleConfirm={() => handleLogout()}
+        handleCancel={handleCancel}
+        children={<TextUI text="Đăng xuất khỏi trang!" />}
+      />
     </div>
   );
 };
