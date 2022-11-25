@@ -1,5 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
-import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
+import {
+  BrowserRouter,
+  Redirect,
+  Route,
+  Switch,
+  useHistory,
+} from "react-router-dom";
 import { BreadcrumbUI } from "./components/general";
 import HeaderComponent from "./components/layout/Header";
 import { PAGE_URL } from "./constant/route";
@@ -10,7 +16,7 @@ import LoginPage from "./features/Login/LoginPage";
 
 function App() {
   const [username, setUsername] = useState();
-
+  const history = useHistory();
   useEffect(() => {
     document.title = "MWG | HRM";
     window.scrollTo(0, 0);
@@ -66,11 +72,13 @@ function App() {
   const logout = useCallback(() => {
     setUsername(null);
     setCookie(null, false);
+    history.push("/");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const routes = (
     <Switch>
+      <Redirect from="/" to={PAGE_URL.EMPLOYEEINFO.INFO} exact />
 
       <Route patch={PAGE_URL.EMPLOYEEINFO.FIND} exact>
         <EmployeeInfoFindPage />
@@ -79,8 +87,6 @@ function App() {
       <Route patch={PAGE_URL.EMPLOYEEINFO.INFO} exact>
         <EmployeeInfoPage />
       </Route>
-      
-      <Redirect from="/" to={PAGE_URL.EMPLOYEEINFO.INFO} exact />
     </Switch>
   );
 
