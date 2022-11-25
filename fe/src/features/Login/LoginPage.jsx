@@ -2,15 +2,18 @@ import { LoginOutlined } from "@ant-design/icons";
 import { Col, Divider, Form, Input, Row, Space } from "antd";
 import axios from "axios";
 import React, { useContext, useState } from "react";
+import { useHistory } from "react-router";
 import Background from "../../assets/images/background-homepage.jpg";
 import EmptyCardNoHeader from "../../components/card/EmptyCardNoHeader";
 import { ButtonUI, TitleUI } from "../../components/general";
+import { PAGE_URL } from "../../constant/route";
 import { Notify } from "../../helpers";
 import { Utils } from "../../utils/utils";
 import { AuthContext } from "./Context/AuthContext";
 
 function LoginPage() {
   const [form] = Form.useForm();
+  const history = useHistory();
   const authInfo = useContext(AuthContext);
   const [requesting, setRequesting] = useState(false);
 
@@ -31,6 +34,7 @@ function LoginPage() {
     if (res.data.status === "success") {
       Notify.success("", res.message ? res.message : "Đăng nhập thành công!");
       authInfo.login(data.username);
+      history.push(PAGE_URL.EMPLOYEEINFO.INFO);
     } else {
       Notify.error("", res.message ? res.message : "Xảy ra lỗi!");
       setRequesting(false);

@@ -4,11 +4,11 @@ import { BreadcrumbUI } from "./components/general";
 import HeaderComponent from "./components/layout/Header";
 import { PAGE_URL } from "./constant/route";
 import EmployeeInfoPage from "./features/EmployeeInfo/EmployeeInfo/pages/EmployeeInfoPage";
+import EmployeeInfoFindPage from "./features/EmployeeInfo/EmployeeInfoFind/pages/EmployeeInfoFindPage";
 import { AuthContext } from "./features/Login/Context/AuthContext";
 import LoginPage from "./features/Login/LoginPage";
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState();
 
   useEffect(() => {
@@ -57,7 +57,6 @@ function App() {
   };
 
   const login = useCallback((uid) => {
-    setIsLoggedIn(true);
     setUsername(uid);
     setCookie(uid, true);
 
@@ -65,25 +64,23 @@ function App() {
   }, []);
 
   const logout = useCallback(() => {
-    setIsLoggedIn(false);
     setUsername(null);
     setCookie(null, false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const routes = checkCookie() ? (
+  const routes = (
     <Switch>
-      <Redirect from="/" to={PAGE_URL.EMPLOYEEINFO.INFO} exact />
+
+      <Route patch={PAGE_URL.EMPLOYEEINFO.FIND} exact>
+        <EmployeeInfoFindPage />
+      </Route>
 
       <Route patch={PAGE_URL.EMPLOYEEINFO.INFO} exact>
         <EmployeeInfoPage />
       </Route>
-    </Switch>
-  ) : (
-    <Switch>
-      <Route patch="/">
-        <LoginPage />
-      </Route>
+      
+      <Redirect from="/" to={PAGE_URL.EMPLOYEEINFO.INFO} exact />
     </Switch>
   );
 
@@ -91,7 +88,6 @@ function App() {
     <BrowserRouter>
       <AuthContext.Provider
         value={{
-          isLoggedIn: isLoggedIn,
           userinfo: username,
           login: login,
           logout: logout,
