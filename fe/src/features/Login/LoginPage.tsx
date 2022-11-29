@@ -33,7 +33,6 @@ function LoginPage() {
     const res: any = await axios.post(url, data);
 
     if (res.data.status === "success") {
-      Notify.success("", res.data.message ? res.data.message : "Đăng nhập thành công!");
       authInfo.login(data.username);
       history.push(PAGE_URL.EMPLOYEEINFO.INFO);
     } else {

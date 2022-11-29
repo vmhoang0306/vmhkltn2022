@@ -5,7 +5,7 @@ import {
   Route,
   Switch,
   useHistory,
-  withRouter,
+  withRouter
 } from "react-router-dom";
 import { BreadcrumbUI } from "./components/general";
 import HeaderComponent from "./components/layout/Header";
@@ -117,7 +117,7 @@ function App() {
         {checkCookie() ? (
           <div>
             <HeaderComponent />
-            <div className="px-5 py-2">
+            <div className="px-5 pt-2 pb-5">
               <BreadcrumbUI />
               {routes}
             </div>
