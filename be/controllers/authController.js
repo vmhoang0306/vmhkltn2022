@@ -12,27 +12,27 @@ export const login = async (req, res) => {
       });
     }
 
-    const userInfo = mongooseHelper.ToObject(await IEmployeeInfo.findOne({
-      username: username,
-    }));
+    const userInfo = mongooseHelper.ToObject(
+      await IEmployeeInfo.findOne({ username: username })
+    );
 
     if (userInfo === null) {
-      return res.status(401).json({
-        message: "Không tồn tại thông tin tài khoản!",
+      return res.status(400).json({
         status: "error",
+        message: "Không tồn tại thông tin tài khoản!",
       });
     }
 
     if (password !== userInfo.password) {
       return res
-        .status(401)
-        .json({ message: "Sai thông tin tài khoản!", status: "error" });
+        .status(400)
+        .json({ status: "error", message: "Sai thông tin tài khoản!" });
     }
 
     res
       .status(200)
-      .json({ message: "Đăng nhập thành công!", status: "success" });
+      .json({ status: "success", message: "Đăng nhập thành công!" });
   } catch (e) {
-    res.status(400).json({ message: e.message });
+    res.status(400).json({ status: "error", message: e.message });
   }
 };

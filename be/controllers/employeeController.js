@@ -1,4 +1,5 @@
 import IEmployeeInfo from "../models/employeeInfo.js";
+import IDepartment from "../models/department.js";
 
 class APIfeatures {
   constructor(query, queryString) {
@@ -51,31 +52,34 @@ export const getAllEmployeeInfo = async (req, res) => {
   try {
     const listEmployeeInfo = await IEmployeeInfo.find();
 
-    res.status(200).json(listEmployeeInfo);
+    res.status(200).json({ status: "success", data: listEmployeeInfo });
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    res.status(400).json({ status: "error", message: error.message });
   }
 };
 
 //GET BY ID
 export const getInfoById = async (req, res) => {
-  const username = req.params.username;
+  const username = req.query.username;
 
-  let info;
   try {
-    info = await IEmployeeInfo.findOne({ username: username });
-  } catch {
-    return res
-      .status(400)
-      .json({ errorMessage: "Some thing went wrong, please try again" });
-  }
+    const info = await IEmployeeInfo.findOne({ username: username }).populate("department");
 
-  if (!info) {
-    return res
-      .status(401)
-      .json({ errorMessage: "Can not find this infomation, please try again" });
+    if (info === null || info.length === 0) {
+      return res.status(400).json({
+        status: "error",
+        message: "Can not find this infomation, please try again",
+      });
+    }
+
+    res.status(200).json({
+      status: "success",
+      data: info,
+      message: "Thông tin nhân viên " + username,
+    });
+  } catch (e) {
+    return res.status(400).json({ status: "error", message: e.message });
   }
-  res.json({ info: info.toObject({ getters: true }) });
 };
 
 //CREATE

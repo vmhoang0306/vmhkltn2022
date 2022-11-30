@@ -6,6 +6,7 @@ import { useHistory } from "react-router";
 import Background from "../../assets/images/background-homepage.jpg";
 import EmptyCardNoHeader from "../../components/card/EmptyCardNoHeader";
 import { ButtonUI, TitleUI } from "../../components/general";
+import { ApiConstants } from "../../constant";
 import { PAGE_URL } from "../../constant/route";
 import { Notify } from "../../helpers";
 import { Utils } from "../../utils";
@@ -23,7 +24,7 @@ function LoginPage() {
   };
 
   const handleFinish = async () => {
-    const url = "http://localhost:5000/api/auth/login";
+    const url = ApiConstants.login;
     const data = {
       username: form.getFieldValue("username"),
       password: Utils.enCode(form.getFieldValue("password")),

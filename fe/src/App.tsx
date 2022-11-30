@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import {
   BrowserRouter,
   Redirect,
@@ -9,7 +9,7 @@ import {
 } from "react-router-dom";
 import { BreadcrumbUI } from "./components/general";
 import HeaderComponent from "./components/layout/Header";
-import { PAGE_URL } from "./constant/route";
+import { PAGE_URL } from "./constant";
 import PageNotFound from "./features/common/PageNotFound";
 import EmployeeInfoPage from "./features/EmployeeInfo/EmployeeInfo/pages/EmployeeInfoPage";
 import EmployeeInfoFindPage from "./features/EmployeeInfo/EmployeeInfoFind/pages/EmployeeInfoFindPage";
@@ -18,7 +18,6 @@ import LoginPage from "./features/Login/LoginPage";
 
 function App() {
   const history = useHistory();
-  const [username, setUsername] = useState<string>("");
 
   useEffect(() => {
     if (!checkCookie()) {
@@ -64,7 +63,6 @@ function App() {
   };
 
   const login = useCallback((uid: string) => {
-    setUsername(uid);
     setCookie(uid, true);
     history.push(PAGE_URL.EMPLOYEEINFO.INFO);
     window.location.reload();
@@ -72,7 +70,6 @@ function App() {
   }, []);
 
   const logout = useCallback(() => {
-    setUsername("");
     setCookie("", false);
     history.push("/login");
     window.location.reload();
@@ -109,7 +106,7 @@ function App() {
     <BrowserRouter>
       <AuthContext.Provider
         value={{
-          username: username,
+          username: getCookie(),
           login: login,
           logout: logout,
         }}

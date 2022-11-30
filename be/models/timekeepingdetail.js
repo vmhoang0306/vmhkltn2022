@@ -16,3 +16,6 @@ const TimekeepingDetailSchema = new Schema({
   hour: { type: Float, require: true },
   date: { type: Number, require: true },
 });
+
+const ITimekeepingDetail = mongoose.model("timekeeping", TimekeepingDetailSchema);
+export default ITimekeepingDetail;
