@@ -8,7 +8,6 @@ const TransferApprovalSchema = new Schema(
       required: true,
       ref: "transfer_report",
     },
-    vacationdate: { type: Date, require: true },
     status: { type: Number, require: true },
     note: { type: String, require: true },
     approveduser: { type: String, require: false },

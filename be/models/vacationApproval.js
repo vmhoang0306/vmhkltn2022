@@ -8,7 +8,6 @@ const VacationApprovalSchema = new Schema(
       required: true,
       ref: "department",
     },
-    vacationdate: { type: Date, require: true },
     status: { type: Number, require: true },
     note: { type: String, require: true },
     approveduser: { type: String, require: false },

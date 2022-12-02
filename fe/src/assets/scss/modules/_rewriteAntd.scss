@@ -106,3 +106,9 @@
   position: absolute!important;
   top: 50px!important;
 }
+
+.ant-table-header {
+  table {
+    table-layout: auto !important;
+  }
+}

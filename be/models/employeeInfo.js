@@ -10,7 +10,7 @@ const EmployeeInfoSchema = new Schema(
       phonenumber: { type: String, require: true },
     },
     dateofbirth: { type: Date, require: true },
-    sex: { type: Number, require: true },
+    gender: { type: Number, require: true },
     identitycardid: { type: String, require: true },
     socialinsuranceid: { type: String, require: false },
     startdatework: { type: Date, require: false },

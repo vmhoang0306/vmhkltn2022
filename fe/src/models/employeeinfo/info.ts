@@ -28,3 +28,7 @@ export interface IEmployeeInfo {
   shift?: any;
   store?: any;
 }
+
+export interface IParamsSearch {
+  keysearch?: string;
+}
