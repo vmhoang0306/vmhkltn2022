@@ -41,9 +41,17 @@ export const Utils = {
       return date.getHours() + ':' + date.getMinutes();
     },
 
-    getDate: (str: any) => {
+    formatDate: (str: any) => {
       const date = new Date(str);
-      return date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
+      const DATE = `0${date.getDate()}`.slice(-2);
+      const MONTH = `0${date.getMonth() + 1}`.slice(-2);
+      const YEAR = `${date.getFullYear()}`;
+      const strdate = DATE + '-' + MONTH + '-' + YEAR;
+      if (strdate === 'NaN-aN-aN') {
+        return undefined;
+      } else {
+        return strdate;
+      }
     },
 
     formatDateInput: (str: any) => {

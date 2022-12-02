@@ -3,8 +3,10 @@ const { Schema } = mongoose;
 
 const TimekeepingSchema = new Schema(
   {
-    atmonth: { type: Number, require: true },
-    atyear: { type: Number, require: true },
+    username: { type: String, require: true },
+    ischeck: { type: Boolean, require: true },
+    hour: { type: Float, require: true },
+    date: { type: Number, require: true },
   },
   {
     timestamps: true,

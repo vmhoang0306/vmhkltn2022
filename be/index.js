@@ -7,6 +7,8 @@ import fs from "fs";
 import employeeInfoRouter from "./routes/employeeInfoRoute.js";
 import shiftRouter from "./routes/shiftRouter.js";
 import authRouter from "./routes/authRoute.js";
+import departmentRouter from "./routes/departmentRouter.js";
+import positionRouter from "./routes/positionRouter.js";
 
 dotenv.config();
 
@@ -27,7 +29,9 @@ app.use((_req, res, next) => {
 });
 
 app.use("/api/employeeinfo", employeeInfoRouter);
+app.use("/api/department", departmentRouter)
 app.use("/api/shift", shiftRouter)
+app.use("/api/position", positionRouter)
 app.use("/api/auth", authRouter)
 
 app.use((error, req, res, next) => {

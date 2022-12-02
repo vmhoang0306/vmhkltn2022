@@ -79,7 +79,7 @@ function EmployeeInfoFind() {
               className="w-100 mt-3"
               dataSource={[]}
               pagination={false}
-              scroll={{ y: 340 }}
+              scroll={{ y: 360 }}
               columns={columns}
               rowKey="index"
             />

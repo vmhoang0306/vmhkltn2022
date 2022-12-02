@@ -6,7 +6,7 @@ export const login = async (req, res) => {
   try {
     const { username, password } = req.body;
     if (!username || !password) {
-      return res.status(400).json({
+      return res.status(200).json({
         message: "Vui lòng nhập đầy đủ thông tin đăng nhập!",
         status: "error",
       });
@@ -17,7 +17,7 @@ export const login = async (req, res) => {
     );
 
     if (userInfo === null) {
-      return res.status(400).json({
+      return res.status(200).json({
         status: "error",
         message: "Không tồn tại thông tin tài khoản!",
       });
@@ -25,7 +25,7 @@ export const login = async (req, res) => {
 
     if (password !== userInfo.password) {
       return res
-        .status(400)
+        .status(200)
         .json({ status: "error", message: "Sai thông tin tài khoản!" });
     }
 

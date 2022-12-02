@@ -1,7 +1,7 @@
 import IStore from "../models/store.js";
 
 //GET ALL
-export const getAllPosition = async (_req, res) => {
+export const getAllStore = async (_req, res) => {
   await IStore.find()
     .then((store) => {
       res

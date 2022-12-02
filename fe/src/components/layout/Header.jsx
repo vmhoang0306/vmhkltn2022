@@ -35,7 +35,7 @@ const HeaderComponent = () => {
   };
 
   return (
-    <div className="custom-header nav">
+    <div className="custom-header nav min-height-50px">
       <div className="nav-logo">
         <div className="nav-btn-open-sidebar" onClick={showDrawer}>
           <MenuOutlined style={{ fontSize: "30px" }} />

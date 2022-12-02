@@ -32,15 +32,14 @@ function LoginPage() {
 
     setRequesting(true);
     const res: any = await axios.post(url, data);
-
+    setRequesting(false);
+    
     if (res.data.status === "success") {
       authInfo.login(data.username);
       history.push(PAGE_URL.EMPLOYEEINFO.INFO);
     } else {
-      Notify.error("", res.data.message ? res.message : "Xảy ra lỗi!");
-      setRequesting(false);
+      Notify.error("", res.data.message ? res.data.message : "Xảy ra lỗi!");
     }
-    setRequesting(false);
   };
 
   return (

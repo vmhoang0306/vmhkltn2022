@@ -1,4 +1,4 @@
-import IDepartment from "../models/department";
+import IDepartment from "../models/department.js";
 
 //GET ALL
 export const getAllDepartment = async (_req, res) => {

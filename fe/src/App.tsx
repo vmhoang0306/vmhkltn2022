@@ -1,3 +1,5 @@
+import { Layout } from "antd";
+import { Content, Footer } from "antd/es/layout/layout";
 import { useCallback, useEffect } from "react";
 import {
   BrowserRouter,
@@ -5,9 +7,10 @@ import {
   Route,
   Switch,
   useHistory,
-  withRouter
+  withRouter,
 } from "react-router-dom";
 import { BreadcrumbUI } from "./components/general";
+import { FooterComponent } from "./components/layout/Footer";
 import HeaderComponent from "./components/layout/Header";
 import { PAGE_URL } from "./constant";
 import PageNotFound from "./features/common/PageNotFound";
@@ -112,13 +115,18 @@ function App() {
         }}
       >
         {checkCookie() ? (
-          <div>
+          <Layout className="min-height-100vh bg-white">
             <HeaderComponent />
-            <div className="px-5 pt-2 pb-5">
+
+            <Content className="px-5 pt-2 pb-5 m-0">
               <BreadcrumbUI />
               {routes}
-            </div>
-          </div>
+            </Content>
+            
+            <Footer className="p-0">
+              <FooterComponent />
+            </Footer>
+          </Layout>
         ) : (
           <LoginPage />
         )}

@@ -6,5 +6,5 @@ const PositionSchema = new Schema({
   description: { type: String, require: true },
 });
 
-const IPosition = mongoose.model("positions", PositionSchema);
+const IPosition = mongoose.model("position", PositionSchema);
 export default IPosition;

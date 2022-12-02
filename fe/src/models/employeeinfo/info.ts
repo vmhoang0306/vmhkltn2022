@@ -1,16 +1,19 @@
 export interface IEmployeeInfo {
   _id?: string;
   username?: string;
+  fullname?: string;
   password?: string;
   contact?: {
     email?: string;
     phonenumber?: string;
   };
+  sex?: number;
   dateofbirth?: string;
   identitycardid?: string;
   socialinsuranceid?: string;
   startdatework?: string;
   enddatework?: string;
+  reason?: string;
   taxcode?: string;
   salary?: number;
   isactive?: boolean;
@@ -20,9 +23,8 @@ export interface IEmployeeInfo {
   updateddate?: string;
   deleteduser?: string;
   deleteddate?: string;
-  department?: {
-    _id?: string;
-    departmentname?: string;
-    isactive?: boolean;
-  };
+  department?: any;
+  position?: any;
+  shift?: any;
+  store?: any;
 }

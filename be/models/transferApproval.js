@@ -1,15 +1,23 @@
 import mongoose from "mongoose";
 const { Schema } = mongoose;
 
-const TimekeepingSchema = new Schema(
+const TransferApprovalSchema = new Schema(
   {
-    atmonth: { type: Number, require: true },
-    atyear: { type: Number, require: true },
+    transferreport: {
+      type: mongoose.Types.ObjectId,
+      required: true,
+      ref: "transfer_report",
+    },
+    vacationdate: { type: Date, require: true },
+    status: { type: Number, require: true },
+    note: { type: String, require: true },
+    approveduser: { type: String, require: false },
+    approveddate: { type: String, require: false },
   },
   {
     timestamps: true,
   }
 );
 
-const ITimekeeping = mongoose.model("timekeeping", TimekeepingSchema);
-export default ITimekeeping;
+const ITransferApproval = mongoose.model("transfer_approvals", TransferApprovalSchema);
+export default ITransferApproval;

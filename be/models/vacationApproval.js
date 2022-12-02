@@ -3,12 +3,16 @@ const { Schema } = mongoose;
 
 const VacationApprovalSchema = new Schema(
   {
-    userapprove: { type: String, require: true },
+    vacationrequirement: {
+      type: mongoose.Types.ObjectId,
+      required: true,
+      ref: "department",
+    },
     vacationdate: { type: Date, require: true },
     status: { type: Number, require: true },
     note: { type: String, require: true },
-    createduser: { type: String, require: false },
-    createddate: { type: String, require: false },
+    approveduser: { type: String, require: false },
+    approveddate: { type: String, require: false },
   },
   {
     timestamps: true,
@@ -20,3 +24,4 @@ const IVacationApproval = mongoose.model(
   VacationApprovalSchema
 );
 export default IVacationApproval;
+ 

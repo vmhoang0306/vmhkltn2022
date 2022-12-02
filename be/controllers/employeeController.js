@@ -1,5 +1,8 @@
 import IEmployeeInfo from "../models/employeeInfo.js";
 import IDepartment from "../models/department.js";
+import IShift from "../models/shift.js";
+import IPosition from "../models/position.js";
+import IStore from "../models/store.js";
 
 class APIfeatures {
   constructor(query, queryString) {
@@ -63,12 +66,15 @@ export const getInfoById = async (req, res) => {
   const username = req.query.username;
 
   try {
-    const info = await IEmployeeInfo.findOne({ username: username }).populate("department");
-
+    const info = await IEmployeeInfo.findOne({ username: username })
+      .populate("department")
+      .populate("store")
+      .populate("position")
+      .populate("shift");
     if (info === null || info.length === 0) {
-      return res.status(400).json({
+      return res.status(200).json({
         status: "error",
-        message: "Can not find this infomation, please try again",
+        message: "Không tìm thấy thông tin của người dùng!",
       });
     }
 
