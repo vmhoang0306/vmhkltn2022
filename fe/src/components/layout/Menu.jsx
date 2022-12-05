@@ -1,4 +1,12 @@
-import { MenuOutlined, SearchOutlined, UserOutlined } from "@ant-design/icons";
+import {
+  ClockCircleOutlined,
+  EditOutlined,
+  FileDoneOutlined, FileSyncOutlined, FileTextOutlined, MenuOutlined,
+  SearchOutlined,
+  SolutionOutlined,
+  SyncOutlined,
+  UserOutlined
+} from "@ant-design/icons";
 import { Menu } from "antd";
 import React from "react";
 import { Link } from "react-router-dom";
@@ -31,7 +39,65 @@ function MenuComponent(props) {
       <UserOutlined />,
       null,
       null
-    )
+    ),
+    getItem(
+      <Link to={PAGE_URL.EMPLOYEEINFO.MANAGE}>Danh sách nhân viên</Link>,
+      "employeeinfo/manage",
+      <SolutionOutlined />,
+      null,
+      null
+    ),
+  ];
+
+  const menuTimekeeping = [
+    getItem(
+      <Link to={PAGE_URL.TIMEKEEPING.TIMEKEEPING}>Chấm công</Link>,
+      "timekeeping/timekeeping",
+      <ClockCircleOutlined />,
+      null,
+      null
+    ),
+    getItem(
+      <Link to={PAGE_URL.TIMEKEEPING.MANAGE}>Quản lý công</Link>,
+      "timekeeping/manage",
+      <FileDoneOutlined />,
+      null,
+      null
+    ),
+  ];
+
+  const menuTransfer = [
+    getItem(
+      <Link to={PAGE_URL.TRANSFER.TRANSFER}>Thuyên chuyển</Link>,
+      "transfer/transfer",
+      <SyncOutlined />,
+      null,
+      null
+    ),
+    getItem(
+      <Link to={PAGE_URL.TRANSFER.MANAGE}>Quản lý thuyên chuyển</Link>,
+      "transfer/manage",
+      <FileSyncOutlined />,
+      null,
+      null
+    ),
+  ];
+
+  const menuVacation = [
+    getItem(
+      <Link to={PAGE_URL.VACATION.VACATION}>Đăng ký nghỉ phép</Link>,
+      "vacation/vacation",
+      <EditOutlined />,
+      null,
+      null
+    ),
+    getItem(
+      <Link to={PAGE_URL.VACATION.MANAGE}>Quản lý đăng ký nghỉ phép</Link>,
+      "vacation/manage",
+      <FileTextOutlined />,
+      null,
+      null
+    ),
   ];
 
   const listMobile = [
@@ -42,9 +108,27 @@ function MenuComponent(props) {
       menuEmployeeInfo,
       null
     ),
-    getItem("test2", "test2", null, null, null),
-    getItem("test3", "test3", null, null, null),
-    getItem("test4", "test4", null, null, null),
+    getItem(
+      <span className="me-2">Quản lý giờ công</span>,
+      "timekeeping",
+      <ClockCircleOutlined />,
+      menuTimekeeping,
+      null
+    ),
+    getItem(
+      <span className="me-2">Quản lý thuyên chuyển</span>,
+      "transfer",
+      <SyncOutlined />,
+      menuTransfer,
+      null
+    ),
+    getItem(
+      <span className="me-2">Quản lý nghỉ phép</span>,
+      "vacation",
+      <EditOutlined />,
+      menuVacation,
+      null
+    ),
   ];
 
   const listWeb = [
@@ -59,7 +143,7 @@ function MenuComponent(props) {
           id="menuFeature"
           mode={mode}
           onClick={closeMenu}
-          style={{ height: "100%", borderRight: 0, padding: 0}}
+          style={{ height: "100%", borderRight: 0, padding: 0 }}
           items={listWeb}
         />
       ) : (

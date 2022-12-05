@@ -6,13 +6,13 @@ import {
 import { Col, Divider, Form, Input, Row, Space, Table, Tag } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { ButtonUI, TextUI, TitleUI } from "../../../../components/general";
-import { ModalConfirm } from "../../../../components/modules";
-import { ApiConstants } from "../../../../constant";
-import { Notify } from "../../../../helpers";
-import { IEmployeeInfo, IParamsSearch } from "../../../../models";
-import { Utils } from "../../../../utils";
-import LoadingFullWidth from "../../../common/LoadingFullWidth";
+import { ButtonUI, TextUI, TitleUI } from "../../../components/general";
+import { ModalConfirm } from "../../../components/modules";
+import { ApiConstants } from "../../../constant";
+import { Notify } from "../../../helpers";
+import { IEmployeeInfo, IParamsSearch } from "../../../models";
+import { Utils } from "../../../utils";
+import LoadingFullWidth from "../../common/LoadingFullWidth";
 
 function EmployeeInfoFind() {
   const [form] = Form.useForm();
@@ -156,6 +156,7 @@ function EmployeeInfoFind() {
                 onClick={handleSearch}
               />
             </Col>
+            
             {requesting ? (
               <Space className="w-100 justify-content-center">
                 <LoadingFullWidth />

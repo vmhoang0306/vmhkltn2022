@@ -14,10 +14,17 @@ import { FooterComponent } from "./components/layout/Footer";
 import HeaderComponent from "./components/layout/Header";
 import { PAGE_URL } from "./constant";
 import PageNotFound from "./features/common/PageNotFound";
-import EmployeeInfoPage from "./features/EmployeeInfo/EmployeeInfo/pages/EmployeeInfoPage";
-import EmployeeInfoFindPage from "./features/EmployeeInfo/EmployeeInfoFind/pages/EmployeeInfoFindPage";
+import EmployeeInfoPage from "./features/EmployeeInfo/pages/EmployeeInfoPage";
+import EmployeeInfoFindPage from "./features/EmployeeInfoFind/pages/EmployeeInfoFindPage";
+import EmployeeManagePage from "./features/EmployeeInfoManage/Pages/EmployeeManagePage";
 import { AuthContext } from "./features/Login/Context/AuthContext";
 import LoginPage from "./features/Login/LoginPage";
+import TimekeepingPage from "./features/Timekeeping/Pages/TimekeepingPage";
+import TimekeepingManagePage from "./features/TimekeepingManage/Pages/TimekeepingManagePage";
+import TransferPage from "./features/Transfer/Pages/TransferPage";
+import TransferApprovalManage from "./features/TransferApproval/Components/TransferApprovalManage";
+import VacationPage from "./features/Vacation/Pages/VacationPage";
+import VacationApprovalPage from "./features/VacationApproval/Pages/TransferApprovalPage";
 
 function App() {
   const history = useHistory();
@@ -83,6 +90,44 @@ function App() {
     <Switch>
       <Route
         exact
+        path={PAGE_URL.VACATION.VACATION}
+        component={withRouter(VacationPage)}
+      />
+      <Route
+        exact
+        path={PAGE_URL.VACATION.MANAGE}
+        component={withRouter(VacationApprovalPage)}
+      />
+
+      <Route
+        exact
+        path={PAGE_URL.TRANSFER.TRANSFER}
+        component={withRouter(TransferPage)}
+      />
+      <Route
+        exact
+        path={PAGE_URL.TRANSFER.MANAGE}
+        component={withRouter(TransferApprovalManage)}
+      />
+
+      <Route
+        exact
+        path={PAGE_URL.TIMEKEEPING.TIMEKEEPING}
+        component={withRouter(TimekeepingPage)}
+      />
+      <Route
+        exact
+        path={PAGE_URL.TIMEKEEPING.MANAGE}
+        component={withRouter(TimekeepingManagePage)}
+      />
+
+      <Route
+        exact
+        path={PAGE_URL.EMPLOYEEINFO.MANAGE}
+        component={withRouter(EmployeeManagePage)}
+      />
+      <Route
+        exact
         path={PAGE_URL.EMPLOYEEINFO.FIND}
         component={withRouter(EmployeeInfoFindPage)}
       />
@@ -122,7 +167,7 @@ function App() {
               <BreadcrumbUI />
               {routes}
             </Content>
-            
+
             <Footer className="p-0">
               <FooterComponent />
             </Footer>

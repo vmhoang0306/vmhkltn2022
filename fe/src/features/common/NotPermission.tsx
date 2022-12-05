@@ -30,7 +30,7 @@ function NotPermission(): JSX.Element {
 
   return (
     <React.Fragment>
-      <Row className="mt-3 mb-5">
+      <Row className="my-1">
         <Col span={24}>
           <div className="not-permission">
             <div className="box-permission">

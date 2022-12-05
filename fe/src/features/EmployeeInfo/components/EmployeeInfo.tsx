@@ -2,13 +2,13 @@ import { InfoCircleOutlined } from "@ant-design/icons";
 import { Col, Divider, Form, Row, Space, Tag } from "antd";
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
-import { TextUI, TitleUI } from "../../../../components/general";
-import { ApiConstants } from "../../../../constant";
-import { Notify } from "../../../../helpers";
-import { IEmployeeInfo } from "../../../../models";
-import { Utils } from "../../../../utils";
-import LoadingFullWidth from "../../../common/LoadingFullWidth";
-import { AuthContext } from "../../../Login/Context/AuthContext";
+import { TextUI, TitleUI } from "../../../components/general";
+import { ApiConstants } from "../../../constant";
+import { Notify } from "../../../helpers";
+import { IEmployeeInfo } from "../../../models";
+import { Utils } from "../../../utils";
+import LoadingFullWidth from "../../common/LoadingFullWidth";
+import { AuthContext } from "../../Login/Context/AuthContext";
 
 function EmployeeInfo() {
   const authInfo = useContext(AuthContext);
