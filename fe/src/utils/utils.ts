@@ -36,9 +36,12 @@ export const Utils = {
   },
 
   date: {
-    getTime: (str: string) => {
+    getTime: (str: any) => {
       const date = new Date(str);
-      return date.getHours() + ':' + date.getMinutes();
+      const HOUR = `0${date.getHours()}`.slice(-2);
+      const MINUTE = `0${date.getMinutes()}`.slice(-2);
+
+      return HOUR + ':' + MINUTE;
     },
 
     formatDate: (str: any) => {

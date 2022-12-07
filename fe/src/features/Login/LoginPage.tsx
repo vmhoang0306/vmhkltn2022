@@ -23,11 +23,11 @@ function LoginPage() {
     form.submit();
   };
 
-  const handleFinish = async () => {
+  const handleFinish = async (e: {username: string, password: string}) => {
     const url = ApiConstants.login;
     const data = {
-      username: form.getFieldValue("username"),
-      password: Utils.enCode(form.getFieldValue("password")),
+      username: e.username,
+      password: Utils.enCode(e.password),
     };
 
     setRequesting(true);
