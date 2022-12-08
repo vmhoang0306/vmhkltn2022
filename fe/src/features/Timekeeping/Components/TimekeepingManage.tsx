@@ -43,7 +43,14 @@ function TimekeepingManage() {
     const minute = Utils.date.getMinute(today);
     if (hour <= ENDTIME && hour >= STARTTIME) {
       const time = hour + minute / 60;
-      const timekeeping = ENDTIME - 1 - time;
+      let timekeeping;
+
+      if(hour <= 12){
+        timekeeping = ENDTIME - 1 - time;
+      }
+      else {
+        timekeeping = ENDTIME - time;
+      }
 
       return timekeeping >= 7.5 ? 8 : timekeeping.toFixed(2);
     }

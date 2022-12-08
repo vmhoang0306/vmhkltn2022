@@ -189,9 +189,10 @@ export const createEmployeeInfo = async (req, res) => {
 //DELETE
 export const deleteEmployeeInfo = async (req, res) => {
   try {
+    const { _id } = req.body;
     await IEmployeeInfo.findOneAndUpdate(
-      { _id: req.query._id },
-      { isactive: false } 
+      { _id: _id },
+      { isactive: false }
     );
 
     res.status(200).json({
