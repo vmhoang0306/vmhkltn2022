@@ -23,6 +23,7 @@ function EmployeeInfo() {
 
       setRequesting(true);
       const res: any = await axios.get(url, { params });
+      setRequesting(false);
 
       if (res.data.status === "success") {
         setInfo(res.data.data);
@@ -30,7 +31,6 @@ function EmployeeInfo() {
         Notify.error("", res.data.message ? res.data.message : "Xảy ra lỗi!");
         setRequesting(false);
       }
-      setRequesting(false);
     };
 
     initData();
@@ -88,25 +88,25 @@ function EmployeeInfo() {
             </Col>
             <Col xl={6} lg={8} md={12} sm={12} xs={24}>
               <span className="txt-bold">Giới tính: </span>
-              <Tag color={info?.sex === 1 ? "blue" : "pink"}>
-                {info?.sex === 1 ? "Nam" : "Nữ"}
+              <Tag color={info?.gender === 1 ? "blue" : "pink"}>
+                {info?.gender === 1 ? "Nam" : "Nữ"}
               </Tag>
             </Col>
             <Col xl={6} lg={8} md={12} sm={12} xs={24}>
               <span className="txt-bold">Siêu thị: </span>
-              {info?.store.storename}
+              {info?.store?.storename}
             </Col>
             <Col xl={6} lg={8} md={12} sm={12} xs={24}>
               <span className="txt-bold">Phòng ban: </span>
-              {info?.department.departmentname}
+              {info?.department?.departmentname}
             </Col>
             <Col xl={6} lg={8} md={12} sm={12} xs={24}>
               <span className="txt-bold">Chức vụ: </span>
-              {info?.position.positionname}
+              {info?.position?.positionname}
             </Col>
             <Col xl={6} lg={8} md={12} sm={12} xs={24}>
               <span className="txt-bold">Loại phân ca: </span>
-              {info?.shift.shiftname}
+              {info?.shift?.shiftname}
             </Col>
           </Row>
 

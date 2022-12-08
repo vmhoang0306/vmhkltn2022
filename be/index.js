@@ -9,6 +9,7 @@ import shiftRouter from "./routes/shiftRouter.js";
 import authRouter from "./routes/authRoute.js";
 import departmentRouter from "./routes/departmentRouter.js";
 import positionRouter from "./routes/positionRouter.js";
+import storeRouter from "./routes/storeRouter.js";
 
 dotenv.config();
 
@@ -29,6 +30,7 @@ app.use((_req, res, next) => {
 });
 
 app.use("/api/employeeinfo", employeeInfoRouter);
+app.use("/api/store", storeRouter)
 app.use("/api/department", departmentRouter)
 app.use("/api/shift", shiftRouter)
 app.use("/api/position", positionRouter)

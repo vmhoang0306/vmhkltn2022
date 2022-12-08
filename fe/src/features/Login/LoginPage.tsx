@@ -23,7 +23,7 @@ function LoginPage() {
     form.submit();
   };
 
-  const handleFinish = async (e: {username: string, password: string}) => {
+  const handleFinish = async (e: { username: string; password: string }) => {
     const url = ApiConstants.login;
     const data = {
       username: e.username,
@@ -31,6 +31,14 @@ function LoginPage() {
     };
 
     setRequesting(true);
+
+    setTimeout(() => {
+      setRequesting(false);
+      if (Utils.string.isNullOrEmpty(authInfo.username)) {
+        Notify.error("", "Xảy ra lỗi mạng!");
+      }
+    }, 6000);
+
     const res: any = await axios.post(url, data);
 
     if (res.data.status === "success") {

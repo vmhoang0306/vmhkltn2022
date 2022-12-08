@@ -67,30 +67,142 @@ export const findByKeySearch = async (req, res) => {
   }
 };
 
+export const searchList = async (req, res) => {
+  const params = req.query;
+
+  let conditions = [];
+  conditions.push({ isactive: true });
+  if (params.keysearch !== undefined && params.keysearch.length > 0) {
+    conditions.push({
+      $or: [
+        { username: { $regex: params.keysearch, $options: "$i" } },
+        { fullname: { $regex: params.keysearch, $options: "$i" } },
+      ],
+    });
+  }
+  if (params.department !== undefined && params.department.length > 0) {
+    conditions.push({ department: params.department });
+  }
+  if (params.store !== undefined && params.store.length > 0) {
+    conditions.push({ store: params.store });
+  }
+  if (params.shift !== undefined && params.shift.length > 0) {
+    conditions.push({ shift: params.shift });
+  }
+
+  try {
+    const results = await IEmployeeInfo.find(
+      conditions.length > 0 ? { $and: conditions } : {}
+    )
+      .populate("department")
+      .populate("store")
+      .populate("position")
+      .populate("shift");
+
+    res.status(200).json({
+      status: "success",
+      data: results,
+      message: "",
+    });
+  } catch (e) {
+    return res.status(400).json({ status: "error", message: e.message });
+  }
+};
+
 //CREATE
 export const createEmployeeInfo = async (req, res) => {
   try {
     const {
-      career: { careerName, icon, total },
+      username,
+      fullname,
+      password,
+      contact,
+      gender,
+      dateofbirth,
+      identitycardid,
+      socialinsuranceid,
+      startdatework,
+      enddatework,
+      reason,
+      taxcode,
+      salary,
+      isactive,
+      createduser,
+      createddate,
+      updateduser,
+      updateddate,
+      deleteduser,
+      deleteddate,
+      department,
+      position,
+      store,
+      shift,
     } = req.body;
     const newEmloyeeInfo = new IEmployeeInfo({
-      career: { careerName, icon, total },
+      username,
+      fullname,
+      password,
+      contact,
+      gender,
+      dateofbirth,
+      identitycardid,
+      socialinsuranceid,
+      startdatework,
+      enddatework,
+      reason,
+      taxcode,
+      salary,
+      isactive,
+      createduser,
+      createddate,
+      updateduser,
+      updateddate,
+      deleteduser,
+      deleteddate,
+      department,
+      position,
+      store,
+      shift,
     });
 
-    await newEmloyeeInfo.save();
-    res.json({ msg: "Created a employee infomation!" });
-  } catch (error) {
-    return res.status(500).json({ msg: error.message });
+    const info = await IEmployeeInfo.findOne({ username: username });
+    if (info === null || info.length === 0) {
+      await newEmloyeeInfo.save();
+    } else {
+      return res
+        .status(200)
+        .json({ data: 0, status: "error", message: "Username đã tồn tại!" });
+    }
+
+    res.status(200).json({
+      data: 1,
+      status: "success",
+      message: "Thêm thông tin người dùng thành công!",
+    });
+  } catch (e) {
+    return res
+      .status(500)
+      .json({ data: -1, status: "error", message: e.message });
   }
 };
 
 //DELETE
 export const deleteEmployeeInfo = async (req, res) => {
   try {
-    await IEmployeeInfo.findByIdAndDelete(req.params.id);
-    res.json({ msg: "Deleted a employee infomation!" });
-  } catch (error) {
-    return res.status(500).json({ msg: err.message });
+    await IEmployeeInfo.findOneAndUpdate(
+      { _id: req.query._id },
+      { isactive: false } 
+    );
+
+    res.status(200).json({
+      data: 1,
+      status: "success",
+      message: "Xóa thông tin người dùng thành công!",
+    });
+  } catch (e) {
+    return res
+      .status(500)
+      .json({ data: -1, status: "error", message: e.message });
   }
 };
 

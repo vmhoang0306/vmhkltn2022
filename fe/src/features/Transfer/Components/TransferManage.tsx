@@ -6,6 +6,8 @@ import { ButtonUI, TextUI, TitleUI } from "../../../components/general";
 import { ModalConfirm } from "../../../components/modules";
 import { ApiConstants } from "../../../constant";
 import { Notify } from "../../../helpers";
+import { IDepartment, IStore } from "../../../models";
+import SelectBase from "../../common/components/SelectBase";
 import LoadingFullWidth from "../../common/LoadingFullWidth";
 
 const { Option } = Select;
@@ -13,41 +15,63 @@ const { Option } = Select;
 function TransferManage() {
   const [form] = Form.useForm();
   const [lstData, setLstData] = useState<any[]>();
-  const [lstDpm, setLstDpm] = useState<any[]>();
-  const [lstSt, setLstSt] = useState<any[]>();
+  const [lstDpm, setLstDpm] = useState<any[]>([]);
+  const [lstSt, setLstSt] = useState<any[]>([]);
   const [showAdd, setShowAdd] = useState(false);
   const [requesting, setRequesting] = useState(false);
+  const [requestingInit, setRequestingInit] = useState(false);
   const [transferType, setTransferType] = useState(1);
 
   useEffect(() => {
     const initData = async () => {
-      const urlDpm = "";
-      const urlSt = "";
+      const urlDpm = ApiConstants.department;
+      const urlSt = ApiConstants.store;
 
-      setRequesting(true);
+      setRequestingInit(true);
       const dpm: any = await axios.get(urlDpm);
       const st: any = await axios.get(urlSt);
-      setRequesting(false);
+      setRequestingInit(false);
 
-      if (dpm.data.status === "success") {
-        setLstDpm(dpm.data.data);
+      if (dpm.data.status === "success" && dpm.data.data?.length! > 0) {
+        setLstDpm(formatDataDpm(dpm.data.data));
       } else {
-        Notify.error("", dpm.data.message ? dpm.data.message : "Xảy ra lỗi khi lấy danh sách phòng ban!");
+        Notify.error(
+          "",
+          dpm.data.message
+            ? dpm.data.message
+            : "Xảy ra lỗi khi lấy danh sách phòng ban!"
+        );
       }
 
-      if (st.data.status === "success") {
-        setLstSt(st.data.data);
+      if (st.data.status === "success" && dpm.data.data?.length! > 0) {
+        setLstSt(formatDataStore(st.data.data));
       } else {
-        Notify.error("", st.data.message ? st.data.message : "Xảy ra lỗi khi lấy danh sách siêu thị!");
+        Notify.error(
+          "",
+          st.data.message
+            ? st.data.message
+            : "Xảy ra lỗi khi lấy danh sách siêu thị!"
+        );
       }
-
-      setTimeout(() => {
-        setRequesting(false);
-      }, 5000);
     };
 
     initData();
   }, []);
+
+  const formatDataDpm = (data: IDepartment[]) => {
+    let results: { value: any; title: any }[] = [];
+    data.forEach((item) => {
+      results.push({ value: item._id, title: item.departmentname });
+    });
+    return results;
+  };
+  const formatDataStore = (data: IStore[]) => {
+    let results: { value: any; title: any }[] = [];
+    data.forEach((item) => {
+      results.push({ value: item._id, title: item.storename });
+    });
+    return results;
+  };
 
   const onChangeType = (e: number) => {
     setTransferType(e);
@@ -55,6 +79,7 @@ function TransferManage() {
 
   const handleCancelAdd = () => {
     setShowAdd(false);
+    form.resetFields();
   };
   const handleAdd = () => {
     setShowAdd(true);
@@ -64,7 +89,7 @@ function TransferManage() {
 
   const handleFinish = async (e: any) => {};
 
-  return !requesting ? (
+  return !requestingInit ? (
     <React.Fragment>
       <Space size={50} direction="vertical" className="w-100" wrap>
         <Form layout="vertical" className="form-row-gap-2">
@@ -154,13 +179,11 @@ function TransferManage() {
                   },
                 ]}
               >
-                <Select
-                  className="w-100 min-width-100px"
-                  placeholder="Chọn loại đăng ký"
-                >
-                  <Option value={1}>{"Thuyên chuyển siêu thị"}</Option>
-                  <Option value={2}>{"Thuyên chuyển phòng ban"}</Option>
-                </Select>
+                <SelectBase
+                  placeholder="Chọn siêu thị"
+                  requesting={requestingInit}
+                  data={lstSt}
+                />
               </Form.Item>
             ) : (
               <Form.Item
@@ -173,13 +196,11 @@ function TransferManage() {
                   },
                 ]}
               >
-                <Select
-                  className="w-100 min-width-100px"
-                  placeholder="Chọn loại đăng ký"
-                >
-                  <Option value={1}>{"Thuyên chuyển siêu thị"}</Option>
-                  <Option value={2}>{"Thuyên chuyển phòng ban"}</Option>
-                </Select>
+                <SelectBase
+                  placeholder="Chọn phòng ban"
+                  requesting={requestingInit}
+                  data={lstDpm}
+                />
               </Form.Item>
             )}
 

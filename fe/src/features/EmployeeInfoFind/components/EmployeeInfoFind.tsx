@@ -51,14 +51,14 @@ function EmployeeInfoFind() {
       title: <TextUI strong text="Phòng ban" />,
       key: "department",
       render: (_text: string, record: IEmployeeInfo) => {
-        return <TextUI text={record.department.departmentname} />;
+        return <TextUI text={record.department?.departmentname!} />;
       },
     },
     {
       title: <TextUI strong text="Siêu thị" />,
       key: "store",
       render: (_text: string, record: IEmployeeInfo) => {
-        return <TextUI text={record.store.storename} />;
+        return <TextUI text={record.store?.storename!} />;
       },
     },
     {
@@ -207,25 +207,25 @@ function EmployeeInfoFind() {
             </Col>
             <Col xl={12} lg={12} md={12} sm={12} xs={24}>
               <span className="txt-bold">Giới tính: </span>
-              <Tag color={detail?.sex === 1 ? "blue" : "pink"}>
-                {detail?.sex === 1 ? "Nam" : "Nữ"}
+              <Tag color={detail?.gender === 1 ? "blue" : "pink"}>
+                {detail?.gender === 1 ? "Nam" : "Nữ"}
               </Tag>
             </Col>
             <Col xl={12} lg={12} md={12} sm={12} xs={24}>
               <span className="txt-bold">Siêu thị: </span>
-              {detail?.store.storename}
+              {detail?.store?.storename}
             </Col>
             <Col xl={12} lg={12} md={12} sm={12} xs={24}>
               <span className="txt-bold">Phòng ban: </span>
-              {detail?.department.departmentname}
+              {detail?.department?.departmentname}
             </Col>
             <Col xl={12} lg={12} md={12} sm={12} xs={24}>
               <span className="txt-bold">Chức vụ: </span>
-              {detail?.position.positionname}
+              {detail?.position?.positionname}
             </Col>
             <Col xl={12} lg={12} md={12} sm={12} xs={24}>
               <span className="txt-bold">Loại phân ca: </span>
-              {detail?.shift.shiftname}
+              {detail?.shift?.shiftname}
             </Col>
           </Row>
 
