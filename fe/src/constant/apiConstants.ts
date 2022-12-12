@@ -7,7 +7,9 @@ export const ApiConstants = {
     findbykeysearch: "/api/employeeinfo/findbykeysearch",
     search: "/api/employeeinfo/searchlist",
     create: "/api/employeeinfo/create",
+    update: "/api/employeeinfo/update",
     delete: "/api/employeeinfo/delete",
+    restore: "/api/employeeinfo/restore",
   },
 
   department: "/api/department",

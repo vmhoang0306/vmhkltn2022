@@ -1,10 +1,10 @@
 import {
   DeleteOutlined,
-  EditOutlined,
   ExportOutlined,
   InfoCircleOutlined,
   PlusCircleOutlined,
   SearchOutlined,
+  UndoOutlined,
 } from "@ant-design/icons";
 import {
   Col,
@@ -14,12 +14,10 @@ import {
   Input,
   Row,
   Space,
-  Switch,
   Table,
   Tag,
 } from "antd";
 import axios from "axios";
-import dayjs from "dayjs";
 import React, { useContext, useEffect, useState } from "react";
 import { ButtonUI, TextUI, TitleUI } from "../../../components/general";
 import { ModalConfirm } from "../../../components/modules";
@@ -37,11 +35,12 @@ import { Utils } from "../../../utils";
 import SelectBase from "../../common/components/SelectBase";
 import LoadingFullWidth from "../../common/LoadingFullWidth";
 import { AuthContext } from "../../Login/Context/AuthContext";
+import EditBtn from "./EditBtn";
+import * as XLSX from "xlsx";
 
 function EmployeeManage() {
   const [form] = Form.useForm();
   const [formadd] = Form.useForm();
-  const [formedit] = Form.useForm();
 
   const [lstData, setLstData] = useState<IEmployeeInfo[]>();
   const [requesting, setRequesting] = useState(false);
@@ -58,13 +57,15 @@ function EmployeeManage() {
   const [showAdd, setShowAdd] = useState(false);
   const [requestingAdd, setRequestingAdd] = useState(false);
 
-  const [idEdit, setIdEdit] = useState<IEmployeeInfo>();
-  const [showEdit, setShowEdit] = useState(false);
-  const [requestingEdit, setRequestingEdit] = useState(false);
-
   const [idDelete, setIdDelete] = useState<IEmployeeInfo>();
   const [showDelete, setShowDelete] = useState(false);
   const [requestingDelete, setRequestingDelete] = useState(false);
+
+  const [idRestore, setIdRestore] = useState<IEmployeeInfo>();
+  const [showRestore, setShowRestore] = useState(false);
+  const [requestingRestore, setRequestingRestore] = useState(false);
+
+  const [requestingExport, setRequestingExport] = useState(false);
 
   const NO_DATA = "-Chưa có dữ liệu-";
 
@@ -130,28 +131,9 @@ function EmployeeManage() {
     };
 
     initData();
-  }, []);
-
-  useEffect(() => {
-    if (idEdit)
-      formedit.setFieldsValue({
-        fullname: idEdit.fullname!,
-        email: idEdit.contact?.email!,
-        phonenumber: idEdit.contact?.phonenumber!,
-        identitycardid: idEdit.identitycardid!,
-        socialinsuranceid: idEdit.socialinsuranceid!,
-        taxcode: idEdit.taxcode!,
-        dateofbirth: dayjs(
-          Utils.date.formatDateInput(idEdit.dateofbirth!),
-          "YYYY/MM/DD"
-        ),
-        startdatework: dayjs(
-          Utils.date.formatDateInput(idEdit.startdatework!),
-          "YYYY/MM/DD"
-        ),
-      });
+    form.setFieldsValue({ isactive: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showEdit]);
+  }, []);
 
   const columns = [
     {
@@ -219,21 +201,37 @@ function EmployeeManage() {
       render: (_text: string, record: IEmployeeInfo) => {
         return (
           <Space className="w-100 d-flex justify-content-flex-end">
-            <ButtonUI
-              icon={<EditOutlined />}
-              onClick={() => {
-                setShowEdit(true);
-                setIdEdit(record);
-              }}
-            />
-            <ButtonUI
-              color="danger"
-              icon={<DeleteOutlined />}
-              onClick={() => {
-                setShowDelete(true);
-                setIdDelete(record);
-              }}
-            />
+            {record.isactive ? (
+              <>
+                <EditBtn
+                  idEdit={record}
+                  getlist={() => {
+                    form.submit();
+                  }}
+                  lstDpm={lstDpm}
+                  lstPosition={lstPosition}
+                  lstShift={lstShift}
+                  lstStore={lstStore}
+                />
+                <ButtonUI
+                  color="danger"
+                  icon={<DeleteOutlined />}
+                  onClick={() => {
+                    setIdDelete(record);
+                    setShowDelete(true);
+                  }}
+                />
+              </>
+            ) : (
+              <ButtonUI
+                color="violet"
+                icon={<UndoOutlined />}
+                onClick={() => {
+                  setIdRestore(record);
+                  setShowRestore(true);
+                }}
+              />
+            )}
           </Space>
         );
       },
@@ -318,57 +316,7 @@ function EmployeeManage() {
           ? res.data.message
           : "Thêm thông tin người dùng thành công!"
       );
-      handleCancelAdd();
-    } else {
-      Notify.error("", res.data.message ? res.data.message : "Xảy ra lỗi!");
-    }
-  };
-
-  const handleCancelEdit = () => {
-    setShowEdit(false);
-    formedit.resetFields();
-  };
-  const handleConfirmEdit = () => {
-    formedit.submit();
-  };
-
-  const handleFinishEdit = async (e: any) => {
-    const url = ApiConstants.employeeinfo.create;
-    const data: IEmployeeInfo = {
-      username: e.username,
-      fullname: e.fullname,
-      contact: {
-        email: e.email,
-        phonenumber: e.phonenumber,
-      },
-      gender: e.gender,
-      dateofbirth: e.dateofbirth,
-      identitycardid: e.identitycardid,
-      socialinsuranceid: e.socialinsuranceid,
-      startdatework: e.startdatework,
-      enddatework: "",
-      reason: "",
-      taxcode: e.taxcode,
-      salary: e.salary,
-      isactive: e.isactive,
-      updateduser: authInfo.username,
-      department: e.department,
-      position: e.position,
-      store: e.store,
-      shift: e.shift,
-    };
-
-    setRequestingAdd(true);
-    const res: any = await axios.post(url, data);
-    setRequestingAdd(false);
-
-    if (res.data.data > 0) {
-      Notify.success(
-        "",
-        res.data.message
-          ? res.data.message
-          : "Thêm thông tin người dùng thành công!"
-      );
+      handleSearch();
       handleCancelAdd();
     } else {
       Notify.error("", res.data.message ? res.data.message : "Xảy ra lỗi!");
@@ -394,7 +342,34 @@ function EmployeeManage() {
           ? res.data.message
           : "Xóa thông tin người dùng thành công!"
       );
+      handleSearch();
       handleCancelDelete();
+    } else {
+      Notify.error("", res.data.message ? res.data.message : "Xảy ra lỗi!");
+    }
+  };
+
+  const handleCancelRestore = () => {
+    setRequestingRestore(false);
+    setShowRestore(false);
+  };
+  const handleConfirmRestore = async () => {
+    const url = ApiConstants.employeeinfo.restore;
+    const data: { _id: string | undefined } = { _id: idRestore?._id };
+
+    setRequestingRestore(true);
+    const res: any = await axios.post(url, data);
+    setRequestingRestore(false);
+
+    if (res.data.data > 0) {
+      Notify.success(
+        "",
+        res.data.message
+          ? res.data.message
+          : "Khôi phục thông tin người dùng thành công!"
+      );
+      handleSearch();
+      handleCancelRestore();
     } else {
       Notify.error("", res.data.message ? res.data.message : "Xảy ra lỗi!");
     }
@@ -412,6 +387,7 @@ function EmployeeManage() {
       position: e.position,
       shift: e.shift,
       store: e.store,
+      isactive: e.isactive,
     };
 
     setRequesting(true);
@@ -422,6 +398,74 @@ function EmployeeManage() {
       setLstData(res.data.data);
     } else {
       Notify.error("", res.data.message ? res.data.message : "Xảy ra lỗi!");
+    }
+  };
+
+  const handleFinishExport = async () => {
+    const url = ApiConstants.employeeinfo.search;
+    const params: IParamsSearchList = {
+      keysearch: form.getFieldValue("keysearch"),
+      department: form.getFieldValue("department"),
+      position: form.getFieldValue("position"),
+      shift: form.getFieldValue("shift"),
+      store: form.getFieldValue("store"),
+      isactive: form.getFieldValue("isactive"),
+    };
+
+    setRequestingExport(true);
+    const res: any = await axios.get(url, { params });
+    setRequestingExport(false);
+    if (res.data.status === "success") {
+      const filename = "Danh-sach-nhan-vien.xlsx";
+      const header = [
+        ["Danh sách nhân viên"],
+        [],
+        [
+          "Username",
+          "Họ tên",
+          "Giới tính",
+          "Số diện thoại",
+          "Email",
+          "Ngày sinh",
+          "CCCD",
+          "Ngày bắt đầu làm việc",
+          "Ngày kết thúc làm việc",
+          "Phòng ban",
+          "Vị trí",
+          "Siêu thị",
+          "Loại phân ca",
+        ],
+      ];
+      const data: any[] = [];
+      res.data.data.forEach((item: IEmployeeInfo) => {
+        data.push({
+          username: item.username,
+          fullname: item.fullname,
+          gender: item.gender === 1 ? "Nam" : "Nữ",
+          phonenumber: item.contact?.phonenumber,
+          email: item.contact?.email,
+          dateofbirth: Utils.date.formatDate(item.dateofbirth),
+          identitycardid: item.identitycardid,
+          startdatework: Utils.date.formatDate(item.startdatework),
+          enddatework:
+            Utils.string.isNullOrEmpty(item.enddatework)
+              ? "-Chưa có dữ liệu-"
+              : Utils.date.formatDate(item.enddatework),
+          department: item.department?.departmentname,
+          position: item.position?.positionname,
+          store: item.store?.storename,
+          shift: item.shift?.shiftname,
+        });
+      });
+      const wb = XLSX.utils.book_new();
+      const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet([]);
+      XLSX.utils.sheet_add_aoa(ws, header);
+      XLSX.utils.sheet_add_json(ws, data, {
+        origin: "A4",
+        skipHeader: true,
+      });
+      XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+      XLSX.writeFile(wb, filename);
     }
   };
 
@@ -480,6 +524,23 @@ function EmployeeManage() {
               </Form.Item>
             </Col>
 
+            <Col xl={6} lg={6} md={12} sm={12} xs={24}>
+              <Form.Item
+                name="isactive"
+                label={<TitleUI text="Trạng thái hoạt động" />}
+              >
+                <SelectBase
+                  isShowChooseAll
+                  defVal={true}
+                  placeholder="Chọn trạng thái hoạt động"
+                  data={[
+                    { value: true, title: "Đang hoạt động" },
+                    { value: false, title: "Ngừng hoạt động" },
+                  ]}
+                />
+              </Form.Item>
+            </Col>
+
             <Row
               className="w-100 d-flex justify-content-flex-end"
               gutter={[0, 10]}
@@ -489,6 +550,7 @@ function EmployeeManage() {
                 text="Tìm"
                 onClick={handleSearch}
                 className="ms-1"
+                loading={requesting}
               />
 
               <ButtonUI
@@ -506,6 +568,8 @@ function EmployeeManage() {
                 icon={<ExportOutlined />}
                 text="Xuất Excel"
                 className="ms-1"
+                onClick={handleFinishExport}
+                loading={requestingExport}
               />
             </Row>
 
@@ -905,290 +969,6 @@ function EmployeeManage() {
       </ModalConfirm>
 
       <ModalConfirm
-        visible={showEdit}
-        setVisible={setShowEdit}
-        title={"Cập nhật thông tin người dùng"}
-        handleConfirm={handleConfirmEdit}
-        loadingBtnConfirm={requestingEdit}
-        handleCancel={handleCancelEdit}
-        width={768}
-      >
-        <React.Fragment>
-          <Form
-            form={formedit}
-            layout="vertical"
-            className="form-row-gap-1"
-            onFinish={handleFinishEdit}
-          >
-            <Row gutter={[10, 0]}>
-              <Col xl={24} lg={24} md={24} sm={24} xs={24}>
-                <Divider orientation="left" orientationMargin="0">
-                  <Space direction="horizontal">
-                    <InfoCircleOutlined />
-                    <TitleUI text="Thông tin cá nhân" />
-                  </Space>
-                </Divider>
-              </Col>
-
-              <Col xl={12} lg={12} md={12} sm={24} xs={24}>
-                <Form.Item
-                  name="fullname"
-                  label={<TextUI strong text="Họ tên" />}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Không được bỏ trống trường này!",
-                    },
-                  ]}
-                >
-                  <Input
-                    className="w-100 min-width-100px"
-                    placeholder="Nhập họ tên nhân viên"
-                  />
-                </Form.Item>
-              </Col>
-
-              <Col xl={12} lg={12} md={12} sm={24} xs={24}>
-                <Form.Item
-                  name="gender"
-                  label={<TextUI strong text="Giới tính" />}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Không được bỏ trống trường này!",
-                    },
-                  ]}
-                >
-                  <SelectBase
-                    isShowChooseAll={false}
-                    placeholder="Chọn giới tính"
-                    defVal={idEdit?.gender}
-                    data={[
-                      { value: 0, title: "Nữ" },
-                      { value: 1, title: "Nam" },
-                    ]}
-                  />
-                </Form.Item>
-              </Col>
-
-              <Col xl={12} lg={12} md={12} sm={24} xs={24}>
-                <Form.Item
-                  name="phonenumber"
-                  label={<TextUI strong text="Số điện thoại" />}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Không được bỏ trống trường này!",
-                    },
-                  ]}
-                >
-                  <Input
-                    className="w-100 min-width-100px"
-                    placeholder="Nhập số điện thoại"
-                  />
-                </Form.Item>
-              </Col>
-
-              <Col xl={12} lg={12} md={12} sm={24} xs={24}>
-                <Form.Item name="email" label={<TextUI strong text="Email" />}>
-                  <Input
-                    className="w-100 min-width-100px"
-                    placeholder="Nhập email"
-                  />
-                </Form.Item>
-              </Col>
-
-              <Col xl={12} lg={12} md={12} sm={24} xs={24}>
-                <Form.Item
-                  name="dateofbirth"
-                  label={<TextUI strong text="Ngày sinh" />}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Không được bỏ trống trường này!",
-                    },
-                  ]}
-                >
-                  <DatePicker
-                    format="DD/MM/YYYY"
-                    placeholder="Chọn ngày sinh"
-                    className="w-100 min-width-100px"
-                  />
-                </Form.Item>
-              </Col>
-
-              <Col xl={12} lg={12} md={12} sm={24} xs={24}>
-                <Form.Item
-                  name="department"
-                  label={<TextUI strong text="Phòng ban" />}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Không được bỏ trống trường này!",
-                    },
-                  ]}
-                  >
-                  <SelectBase
-                    isShowChooseAll={false}
-                    placeholder="Chọn phòng ban"
-                    data={lstDpm}
-                    defVal={idEdit?.department?._id}
-                  />
-                </Form.Item>
-              </Col>
-
-              <Col xl={12} lg={12} md={12} sm={24} xs={24}>
-                <Form.Item
-                  name="store"
-                  label={<TextUI strong text="Siêu thị" />}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Không được bỏ trống trường này!",
-                    },
-                  ]}
-                >
-                  <SelectBase
-                    isShowChooseAll={false}
-                    placeholder="Chọn siêu thị"
-                    data={lstStore}
-                    defVal={idEdit?.store?._id}
-                  />
-                </Form.Item>
-              </Col>
-
-              <Col xl={12} lg={12} md={12} sm={24} xs={24}>
-                <Form.Item
-                  name="position"
-                  label={<TextUI strong text="Vị trí" />}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Không được bỏ trống trường này!",
-                    },
-                  ]}
-                >
-                  <SelectBase
-                    isShowChooseAll={false}
-                    placeholder="Chọn vị trí"
-                    data={lstPosition}
-                    defVal={idEdit?.position?._id}
-                  />
-                </Form.Item>
-              </Col>
-
-              <Col xl={12} lg={12} md={12} sm={24} xs={24}>
-                <Form.Item
-                  name="shift"
-                  label={<TextUI strong text="Loại phân ca" />}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Không được bỏ trống trường này!",
-                    },
-                  ]}
-                >
-                  <SelectBase
-                    isShowChooseAll={false}
-                    placeholder="Chọn loại phân ca"
-                    data={lstShift}
-                    defVal={idEdit?.shift?._id}
-                  />
-                </Form.Item>
-              </Col>
-
-              <Col xl={12} lg={12} md={12} sm={24} xs={24}>
-                <Form.Item
-                  name="isactive"
-                  label={<TextUI strong text="Trạng thái hoạt động" />}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Không được bỏ trống trường này!",
-                    },
-                  ]}
-                >
-                  <Switch defaultChecked={idEdit?.isactive} />
-                </Form.Item>
-              </Col>
-            </Row>
-
-            <Row gutter={[10, 0]}>
-              <Col xl={24} lg={24} md={24} sm={24} xs={24}>
-                <Divider orientation="left" orientationMargin="0">
-                  <Space direction="horizontal">
-                    <InfoCircleOutlined />
-                    <TitleUI text="Thông tin công việc" />
-                  </Space>
-                </Divider>
-              </Col>
-
-              <Col xl={12} lg={12} md={12} sm={24} xs={24}>
-                <Form.Item
-                  name="identitycardid"
-                  label={<TextUI strong text="CCCD" />}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Không được bỏ trống trường này!",
-                    },
-                  ]}
-                >
-                  <Input
-                    className="w-100 min-width-100px"
-                    placeholder="Nhập CCCD"
-                  />
-                </Form.Item>
-              </Col>
-
-              <Col xl={12} lg={12} md={12} sm={24} xs={24}>
-                <Form.Item
-                  name="socialinsuranceid"
-                  label={<TextUI strong text="Mã bảo hiểm xã hội" />}
-                >
-                  <Input
-                    className="w-100 min-width-100px"
-                    placeholder="Nhập mã bảo hiểm xã hội"
-                  />
-                </Form.Item>
-              </Col>
-
-              <Col xl={12} lg={12} md={12} sm={24} xs={24}>
-                <Form.Item
-                  name="taxcode"
-                  label={<TextUI strong text="Mã số thuế" />}
-                >
-                  <Input
-                    className="w-100 min-width-100px"
-                    placeholder="Nhập mã số thuế"
-                  />
-                </Form.Item>
-              </Col>
-
-              <Col xl={12} lg={12} md={12} sm={24} xs={24}>
-                <Form.Item
-                  name="startdatework"
-                  label={<TextUI strong text="Ngày bắt đầu làm việc" />}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Không được bỏ trống trường này!",
-                    },
-                  ]}
-                >
-                  <DatePicker
-                    format="DD/MM/YYYY"
-                    placeholder="Chọn ngày bắt đầu làm việc"
-                    className="w-100 min-width-100px"
-                  />
-                </Form.Item>
-              </Col>
-            </Row>
-          </Form>
-        </React.Fragment>
-      </ModalConfirm>
-
-      <ModalConfirm
         divider
         visible={showDelete}
         setVisible={setShowDelete}
@@ -1200,6 +980,21 @@ function EmployeeManage() {
       >
         <TextUI
           text={`Xóa nhân viên ${idDelete?.username} - ${idDelete?.fullname} khỏi danh sách!`}
+        />
+      </ModalConfirm>
+
+      <ModalConfirm
+        divider
+        visible={showRestore}
+        setVisible={setShowRestore}
+        title={"Xóa người dùng"}
+        handleConfirm={handleConfirmRestore}
+        loadingBtnConfirm={requestingRestore}
+        handleCancel={handleCancelRestore}
+        width={768}
+      >
+        <TextUI
+          text={`Khôi phục viên ${idRestore?.username} - ${idRestore?.fullname}!`}
         />
       </ModalConfirm>
     </React.Fragment>

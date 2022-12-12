@@ -71,7 +71,6 @@ export const searchList = async (req, res) => {
   const params = req.query;
 
   let conditions = [];
-  conditions.push({ isactive: true });
   if (params.keysearch !== undefined && params.keysearch.length > 0) {
     conditions.push({
       $or: [
@@ -88,6 +87,9 @@ export const searchList = async (req, res) => {
   }
   if (params.shift !== undefined && params.shift.length > 0) {
     conditions.push({ shift: params.shift });
+  }
+  if (params.isactive !== undefined && params.isactive.length > 0) {
+    conditions.push({ isactive: params.isactive });
   }
 
   try {
@@ -127,12 +129,6 @@ export const createEmployeeInfo = async (req, res) => {
       taxcode,
       salary,
       isactive,
-      createduser,
-      createddate,
-      updateduser,
-      updateddate,
-      deleteduser,
-      deleteddate,
       department,
       position,
       store,
@@ -153,17 +149,19 @@ export const createEmployeeInfo = async (req, res) => {
       taxcode,
       salary,
       isactive,
-      createduser,
-      createddate,
-      updateduser,
-      updateddate,
-      deleteduser,
-      deleteddate,
       department,
       position,
       store,
       shift,
     });
+
+    if (username === undefined || username?.length === 0) {
+      return res.status(200).json({
+        data: 0,
+        status: "error",
+        message: "Không được để trống username!",
+      });
+    }
 
     const info = await IEmployeeInfo.findOne({ username: username });
     if (info === null || info.length === 0) {
@@ -204,13 +202,30 @@ export const deleteEmployeeInfo = async (req, res) => {
   }
 };
 
+//RESTORE
+export const restoreEmployeeInfo = async (req, res) => {
+  try {
+    const { _id } = req.body;
+    await IEmployeeInfo.findOneAndUpdate({ _id: _id }, { isactive: true });
+
+    res.status(200).json({
+      data: 1,
+      status: "success",
+      message: "Khôi phục thông tin người dùng thành công!",
+    });
+  } catch (e) {
+    return res
+      .status(500)
+      .json({ data: -1, status: "error", message: e.message });
+  }
+};
+
 //UPDATE
 export const updateEmployeeInfo = async (req, res) => {
   try {
     const {
       username,
       fullname,
-      password,
       contact,
       gender,
       dateofbirth,
@@ -222,12 +237,6 @@ export const updateEmployeeInfo = async (req, res) => {
       taxcode,
       salary,
       isactive,
-      createduser,
-      createddate,
-      updateduser,
-      updateddate,
-      deleteduser,
-      deleteddate,
       department,
       position,
       store,
@@ -235,11 +244,9 @@ export const updateEmployeeInfo = async (req, res) => {
     } = req.body;
 
     await IEmployeeInfo.findOneAndUpdate(
-      { _id: req.params.id },
+      { username: username },
       {
-        username,
         fullname,
-        password,
         contact,
         gender,
         dateofbirth,
@@ -251,12 +258,6 @@ export const updateEmployeeInfo = async (req, res) => {
         taxcode,
         salary,
         isactive,
-        createduser,
-        createddate,
-        updateduser,
-        updateddate,
-        deleteduser,
-        deleteddate,
         department,
         position,
         store,
@@ -264,8 +265,14 @@ export const updateEmployeeInfo = async (req, res) => {
       }
     );
 
-    res.json({ msg: "Updated a employee infomation!" });
-  } catch (error) {
-    return res.status(500).json({ msg: err.message });
+    res.json({
+      data: 1,
+      status: "success",
+      message: "Cập nhật thông tin người dùng thành công!",
+    });
+  } catch (e) {
+    return res
+      .status(500)
+      .json({ data: -1, status: "error", message: e.message });
   }
 };

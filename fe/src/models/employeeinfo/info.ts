@@ -40,4 +40,7 @@ export interface IParamsSearchList {
   position?: string;
   store?: string;
   shift?: string;
+  isactive?: boolean;
+  pagesize?: number;
+  offset?: number;
 }
