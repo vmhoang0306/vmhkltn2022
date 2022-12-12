@@ -9,12 +9,6 @@ const VacationRequirementSchema = new Schema(
     todate: { type: Date, require: true },
     status: { type: Number, require: true },
     reason: { type: String, require: true },
-    createduser: { type: String, require: false },
-    createdAt: { type: String, require: false },
-    deleteduser: { type: String, require: false },
-    updateAt: { type: String, require: false },
-    approveduser: { type: String, require: false },
-    approveddate: { type: String, require: false },
   },
   {
     timestamps: true,

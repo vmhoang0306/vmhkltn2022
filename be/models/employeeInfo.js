@@ -40,11 +40,6 @@ const EmployeeInfoSchema = new Schema(
     taxcode: { type: String, require: false },
     password: { type: String, require: true },
     isactive: { type: Boolean, require: true, default: true },
-    createduser: { type: String, require: false },
-    createdAt: { type: String, require: false },
-    updateduser: { type: String, require: false },
-    updatedAt: { type: String, require: false },
-    deleteduser: { type: String, require: false },
   },
   {
     timestamps: true,
