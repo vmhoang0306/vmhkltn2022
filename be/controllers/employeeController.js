@@ -190,10 +190,7 @@ export const createEmployeeInfo = async (req, res) => {
 export const deleteEmployeeInfo = async (req, res) => {
   try {
     const { _id } = req.body;
-    await IEmployeeInfo.findOneAndUpdate(
-      { _id: _id },
-      { isactive: false }
-    );
+    await IEmployeeInfo.findOneAndUpdate({ _id: _id }, { isactive: false });
 
     res.status(200).json({
       data: 1,
@@ -211,13 +208,59 @@ export const deleteEmployeeInfo = async (req, res) => {
 export const updateEmployeeInfo = async (req, res) => {
   try {
     const {
-      career: { careerName, icon, total },
+      username,
+      fullname,
+      password,
+      contact,
+      gender,
+      dateofbirth,
+      identitycardid,
+      socialinsuranceid,
+      startdatework,
+      enddatework,
+      reason,
+      taxcode,
+      salary,
+      isactive,
+      createduser,
+      createddate,
+      updateduser,
+      updateddate,
+      deleteduser,
+      deleteddate,
+      department,
+      position,
+      store,
+      shift,
     } = req.body;
 
     await IEmployeeInfo.findOneAndUpdate(
       { _id: req.params.id },
       {
-        career: { careerName, icon, total },
+        username,
+        fullname,
+        password,
+        contact,
+        gender,
+        dateofbirth,
+        identitycardid,
+        socialinsuranceid,
+        startdatework,
+        enddatework,
+        reason,
+        taxcode,
+        salary,
+        isactive,
+        createduser,
+        createddate,
+        updateduser,
+        updateddate,
+        deleteduser,
+        deleteddate,
+        department,
+        position,
+        store,
+        shift,
       }
     );
 

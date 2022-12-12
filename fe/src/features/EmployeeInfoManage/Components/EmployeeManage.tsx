@@ -14,10 +14,12 @@ import {
   Input,
   Row,
   Space,
+  Switch,
   Table,
   Tag,
 } from "antd";
 import axios from "axios";
+import dayjs from "dayjs";
 import React, { useContext, useEffect, useState } from "react";
 import { ButtonUI, TextUI, TitleUI } from "../../../components/general";
 import { ModalConfirm } from "../../../components/modules";
@@ -34,15 +36,12 @@ import {
 import { Utils } from "../../../utils";
 import SelectBase from "../../common/components/SelectBase";
 import LoadingFullWidth from "../../common/LoadingFullWidth";
-import locale from "antd/es/date-picker/locale/vi_VN";
-import dayjs from "dayjs";
 import { AuthContext } from "../../Login/Context/AuthContext";
 
 function EmployeeManage() {
-  const today = new Date();
-
   const [form] = Form.useForm();
   const [formadd] = Form.useForm();
+  const [formedit] = Form.useForm();
 
   const [lstData, setLstData] = useState<IEmployeeInfo[]>();
   const [requesting, setRequesting] = useState(false);
@@ -58,6 +57,10 @@ function EmployeeManage() {
 
   const [showAdd, setShowAdd] = useState(false);
   const [requestingAdd, setRequestingAdd] = useState(false);
+
+  const [idEdit, setIdEdit] = useState<IEmployeeInfo>();
+  const [showEdit, setShowEdit] = useState(false);
+  const [requestingEdit, setRequestingEdit] = useState(false);
 
   const [idDelete, setIdDelete] = useState<IEmployeeInfo>();
   const [showDelete, setShowDelete] = useState(false);
@@ -129,6 +132,27 @@ function EmployeeManage() {
     initData();
   }, []);
 
+  useEffect(() => {
+    if (idEdit)
+      formedit.setFieldsValue({
+        fullname: idEdit.fullname!,
+        email: idEdit.contact?.email!,
+        phonenumber: idEdit.contact?.phonenumber!,
+        identitycardid: idEdit.identitycardid!,
+        socialinsuranceid: idEdit.socialinsuranceid!,
+        taxcode: idEdit.taxcode!,
+        dateofbirth: dayjs(
+          Utils.date.formatDateInput(idEdit.dateofbirth!),
+          "YYYY/MM/DD"
+        ),
+        startdatework: dayjs(
+          Utils.date.formatDateInput(idEdit.startdatework!),
+          "YYYY/MM/DD"
+        ),
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showEdit]);
+
   const columns = [
     {
       title: <TextUI strong text="Username" />,
@@ -195,7 +219,13 @@ function EmployeeManage() {
       render: (_text: string, record: IEmployeeInfo) => {
         return (
           <Space className="w-100 d-flex justify-content-flex-end">
-            <ButtonUI icon={<EditOutlined />} />
+            <ButtonUI
+              icon={<EditOutlined />}
+              onClick={() => {
+                setShowEdit(true);
+                setIdEdit(record);
+              }}
+            />
             <ButtonUI
               color="danger"
               icon={<DeleteOutlined />}
@@ -269,11 +299,59 @@ function EmployeeManage() {
       salary: 0,
       isactive: true,
       createduser: authInfo.username,
-      createddate: Utils.date.formatDateInput(today),
       updateduser: "",
-      updateddate: "",
       deleteduser: "",
-      deleteddate: "",
+      department: e.department,
+      position: e.position,
+      store: e.store,
+      shift: e.shift,
+    };
+
+    setRequestingAdd(true);
+    const res: any = await axios.post(url, data);
+    setRequestingAdd(false);
+
+    if (res.data.data > 0) {
+      Notify.success(
+        "",
+        res.data.message
+          ? res.data.message
+          : "Thêm thông tin người dùng thành công!"
+      );
+      handleCancelAdd();
+    } else {
+      Notify.error("", res.data.message ? res.data.message : "Xảy ra lỗi!");
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setShowEdit(false);
+    formedit.resetFields();
+  };
+  const handleConfirmEdit = () => {
+    formedit.submit();
+  };
+
+  const handleFinishEdit = async (e: any) => {
+    const url = ApiConstants.employeeinfo.create;
+    const data: IEmployeeInfo = {
+      username: e.username,
+      fullname: e.fullname,
+      contact: {
+        email: e.email,
+        phonenumber: e.phonenumber,
+      },
+      gender: e.gender,
+      dateofbirth: e.dateofbirth,
+      identitycardid: e.identitycardid,
+      socialinsuranceid: e.socialinsuranceid,
+      startdatework: e.startdatework,
+      enddatework: "",
+      reason: "",
+      taxcode: e.taxcode,
+      salary: e.salary,
+      isactive: e.isactive,
+      updateduser: authInfo.username,
       department: e.department,
       position: e.position,
       store: e.store,
@@ -300,7 +378,7 @@ function EmployeeManage() {
   const handleCancelDelete = () => {
     setRequestingDelete(false);
     setShowDelete(false);
-  }
+  };
   const handleConfirmDelete = async () => {
     const url = ApiConstants.employeeinfo.delete;
     const data: { _id: string | undefined } = { _id: idDelete?._id };
@@ -667,14 +745,9 @@ function EmployeeManage() {
                   ]}
                 >
                   <DatePicker
-                    locale={locale}
                     format="DD/MM/YYYY"
                     placeholder="Chọn ngày sinh"
                     className="w-100 min-width-100px"
-                    defaultValue={dayjs(
-                      Utils.date.formatDateInput(today),
-                      "YYYY/MM/DD"
-                    )}
                   />
                 </Form.Item>
               </Col>
@@ -820,14 +893,293 @@ function EmployeeManage() {
                   ]}
                 >
                   <DatePicker
-                    locale={locale}
                     format="DD/MM/YYYY"
                     placeholder="Chọn ngày bắt đầu làm việc"
                     className="w-100 min-width-100px"
-                    defaultValue={dayjs(
-                      Utils.date.formatDateInput(today),
-                      "YYYY/MM/DD"
-                    )}
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+          </Form>
+        </React.Fragment>
+      </ModalConfirm>
+
+      <ModalConfirm
+        visible={showEdit}
+        setVisible={setShowEdit}
+        title={"Cập nhật thông tin người dùng"}
+        handleConfirm={handleConfirmEdit}
+        loadingBtnConfirm={requestingEdit}
+        handleCancel={handleCancelEdit}
+        width={768}
+      >
+        <React.Fragment>
+          <Form
+            form={formedit}
+            layout="vertical"
+            className="form-row-gap-1"
+            onFinish={handleFinishEdit}
+          >
+            <Row gutter={[10, 0]}>
+              <Col xl={24} lg={24} md={24} sm={24} xs={24}>
+                <Divider orientation="left" orientationMargin="0">
+                  <Space direction="horizontal">
+                    <InfoCircleOutlined />
+                    <TitleUI text="Thông tin cá nhân" />
+                  </Space>
+                </Divider>
+              </Col>
+
+              <Col xl={12} lg={12} md={12} sm={24} xs={24}>
+                <Form.Item
+                  name="fullname"
+                  label={<TextUI strong text="Họ tên" />}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Không được bỏ trống trường này!",
+                    },
+                  ]}
+                >
+                  <Input
+                    className="w-100 min-width-100px"
+                    placeholder="Nhập họ tên nhân viên"
+                  />
+                </Form.Item>
+              </Col>
+
+              <Col xl={12} lg={12} md={12} sm={24} xs={24}>
+                <Form.Item
+                  name="gender"
+                  label={<TextUI strong text="Giới tính" />}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Không được bỏ trống trường này!",
+                    },
+                  ]}
+                >
+                  <SelectBase
+                    isShowChooseAll={false}
+                    placeholder="Chọn giới tính"
+                    defVal={idEdit?.gender}
+                    data={[
+                      { value: 0, title: "Nữ" },
+                      { value: 1, title: "Nam" },
+                    ]}
+                  />
+                </Form.Item>
+              </Col>
+
+              <Col xl={12} lg={12} md={12} sm={24} xs={24}>
+                <Form.Item
+                  name="phonenumber"
+                  label={<TextUI strong text="Số điện thoại" />}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Không được bỏ trống trường này!",
+                    },
+                  ]}
+                >
+                  <Input
+                    className="w-100 min-width-100px"
+                    placeholder="Nhập số điện thoại"
+                  />
+                </Form.Item>
+              </Col>
+
+              <Col xl={12} lg={12} md={12} sm={24} xs={24}>
+                <Form.Item name="email" label={<TextUI strong text="Email" />}>
+                  <Input
+                    className="w-100 min-width-100px"
+                    placeholder="Nhập email"
+                  />
+                </Form.Item>
+              </Col>
+
+              <Col xl={12} lg={12} md={12} sm={24} xs={24}>
+                <Form.Item
+                  name="dateofbirth"
+                  label={<TextUI strong text="Ngày sinh" />}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Không được bỏ trống trường này!",
+                    },
+                  ]}
+                >
+                  <DatePicker
+                    format="DD/MM/YYYY"
+                    placeholder="Chọn ngày sinh"
+                    className="w-100 min-width-100px"
+                  />
+                </Form.Item>
+              </Col>
+
+              <Col xl={12} lg={12} md={12} sm={24} xs={24}>
+                <Form.Item
+                  name="department"
+                  label={<TextUI strong text="Phòng ban" />}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Không được bỏ trống trường này!",
+                    },
+                  ]}
+                  >
+                  <SelectBase
+                    isShowChooseAll={false}
+                    placeholder="Chọn phòng ban"
+                    data={lstDpm}
+                    defVal={idEdit?.department?._id}
+                  />
+                </Form.Item>
+              </Col>
+
+              <Col xl={12} lg={12} md={12} sm={24} xs={24}>
+                <Form.Item
+                  name="store"
+                  label={<TextUI strong text="Siêu thị" />}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Không được bỏ trống trường này!",
+                    },
+                  ]}
+                >
+                  <SelectBase
+                    isShowChooseAll={false}
+                    placeholder="Chọn siêu thị"
+                    data={lstStore}
+                    defVal={idEdit?.store?._id}
+                  />
+                </Form.Item>
+              </Col>
+
+              <Col xl={12} lg={12} md={12} sm={24} xs={24}>
+                <Form.Item
+                  name="position"
+                  label={<TextUI strong text="Vị trí" />}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Không được bỏ trống trường này!",
+                    },
+                  ]}
+                >
+                  <SelectBase
+                    isShowChooseAll={false}
+                    placeholder="Chọn vị trí"
+                    data={lstPosition}
+                    defVal={idEdit?.position?._id}
+                  />
+                </Form.Item>
+              </Col>
+
+              <Col xl={12} lg={12} md={12} sm={24} xs={24}>
+                <Form.Item
+                  name="shift"
+                  label={<TextUI strong text="Loại phân ca" />}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Không được bỏ trống trường này!",
+                    },
+                  ]}
+                >
+                  <SelectBase
+                    isShowChooseAll={false}
+                    placeholder="Chọn loại phân ca"
+                    data={lstShift}
+                    defVal={idEdit?.shift?._id}
+                  />
+                </Form.Item>
+              </Col>
+
+              <Col xl={12} lg={12} md={12} sm={24} xs={24}>
+                <Form.Item
+                  name="isactive"
+                  label={<TextUI strong text="Trạng thái hoạt động" />}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Không được bỏ trống trường này!",
+                    },
+                  ]}
+                >
+                  <Switch defaultChecked={idEdit?.isactive} />
+                </Form.Item>
+              </Col>
+            </Row>
+
+            <Row gutter={[10, 0]}>
+              <Col xl={24} lg={24} md={24} sm={24} xs={24}>
+                <Divider orientation="left" orientationMargin="0">
+                  <Space direction="horizontal">
+                    <InfoCircleOutlined />
+                    <TitleUI text="Thông tin công việc" />
+                  </Space>
+                </Divider>
+              </Col>
+
+              <Col xl={12} lg={12} md={12} sm={24} xs={24}>
+                <Form.Item
+                  name="identitycardid"
+                  label={<TextUI strong text="CCCD" />}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Không được bỏ trống trường này!",
+                    },
+                  ]}
+                >
+                  <Input
+                    className="w-100 min-width-100px"
+                    placeholder="Nhập CCCD"
+                  />
+                </Form.Item>
+              </Col>
+
+              <Col xl={12} lg={12} md={12} sm={24} xs={24}>
+                <Form.Item
+                  name="socialinsuranceid"
+                  label={<TextUI strong text="Mã bảo hiểm xã hội" />}
+                >
+                  <Input
+                    className="w-100 min-width-100px"
+                    placeholder="Nhập mã bảo hiểm xã hội"
+                  />
+                </Form.Item>
+              </Col>
+
+              <Col xl={12} lg={12} md={12} sm={24} xs={24}>
+                <Form.Item
+                  name="taxcode"
+                  label={<TextUI strong text="Mã số thuế" />}
+                >
+                  <Input
+                    className="w-100 min-width-100px"
+                    placeholder="Nhập mã số thuế"
+                  />
+                </Form.Item>
+              </Col>
+
+              <Col xl={12} lg={12} md={12} sm={24} xs={24}>
+                <Form.Item
+                  name="startdatework"
+                  label={<TextUI strong text="Ngày bắt đầu làm việc" />}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Không được bỏ trống trường này!",
+                    },
+                  ]}
+                >
+                  <DatePicker
+                    format="DD/MM/YYYY"
+                    placeholder="Chọn ngày bắt đầu làm việc"
+                    className="w-100 min-width-100px"
                   />
                 </Form.Item>
               </Col>

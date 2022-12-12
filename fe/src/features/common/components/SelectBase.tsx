@@ -4,7 +4,7 @@ const { Option } = Select;
 interface DepartmentProps {
   onChange?: (val: any) => void;
   placeholder?: string;
-  defVal?: string;
+  defVal?: any;
   isShowChooseAll?: boolean;
   data: { value: any, title: any }[];
   requesting?: boolean;

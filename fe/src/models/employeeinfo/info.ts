@@ -20,11 +20,10 @@ export interface IEmployeeInfo {
   salary?: number;
   isactive?: boolean;
   createduser?: string;
-  createddate?: string;
+  createdAt?: string;
   updateduser?: string;
-  updateddate?: string;
+  updatedAt?: string;
   deleteduser?: string;
-  deleteddate?: string;
   department?: IDepartment;
   position?: IPosition;
   shift?: IShift;

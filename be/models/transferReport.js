@@ -16,7 +16,7 @@ const TransferReportSchema = new Schema(
     },
     status: { type: Number, require: true },
     createduser: { type: String, require: false },
-    createddate: { type: String, require: false },
+    createdAt: { type: String, require: false },
     approveduser: { type: String, require: false },
     approveddate: { type: String, require: false },
   },
