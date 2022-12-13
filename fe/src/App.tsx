@@ -13,6 +13,7 @@ import { BreadcrumbUI } from "./components/general";
 import { FooterComponent } from "./components/layout/Footer";
 import HeaderComponent from "./components/layout/Header";
 import { PAGE_URL } from "./constant";
+import ChangePassPage from "./features/ChangePassword/pages/ChangePassPage";
 import PageNotFound from "./features/common/PageNotFound";
 import EmployeeInfoPage from "./features/EmployeeInfo/pages/EmployeeInfoPage";
 import EmployeeInfoFindPage from "./features/EmployeeInfoFind/pages/EmployeeInfoFindPage";
@@ -88,6 +89,11 @@ function App() {
 
   const routes = checkCookie() ? (
     <Switch>
+      <Route
+        exact
+        path={PAGE_URL.CHANGEPASS}
+        component={withRouter(ChangePassPage)}
+      />
       <Route
         exact
         path={PAGE_URL.VACATION.VACATION}

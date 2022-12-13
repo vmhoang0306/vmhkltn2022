@@ -447,10 +447,9 @@ function EmployeeManage() {
           dateofbirth: Utils.date.formatDate(item.dateofbirth),
           identitycardid: item.identitycardid,
           startdatework: Utils.date.formatDate(item.startdatework),
-          enddatework:
-            Utils.string.isNullOrEmpty(item.enddatework)
-              ? "-Chưa có dữ liệu-"
-              : Utils.date.formatDate(item.enddatework),
+          enddatework: Utils.string.isNullOrEmpty(item.enddatework)
+            ? "-Chưa có dữ liệu-"
+            : Utils.date.formatDate(item.enddatework),
           department: item.department?.departmentname,
           position: item.position?.positionname,
           store: item.store?.storename,
@@ -573,20 +572,14 @@ function EmployeeManage() {
               />
             </Row>
 
-            {requesting ? (
-              <Space className="w-100 justify-content-center">
-                <LoadingFullWidth />
-              </Space>
-            ) : (
-              <Table
-                className="w-100 mt-3"
-                dataSource={lstData}
-                pagination={false}
-                scroll={{ y: 360 }}
-                columns={columns}
-                rowKey="index"
-              />
-            )}
+            <Table
+              className="w-100 mt-3"
+              dataSource={lstData}
+              pagination={false}
+              scroll={{ y: 360 }}
+              columns={columns}
+              rowKey="index"
+            />
           </Row>
         </Form>
       </Space>

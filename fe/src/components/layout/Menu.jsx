@@ -2,6 +2,7 @@ import {
   ClockCircleOutlined,
   EditOutlined,
   FileDoneOutlined, FileSyncOutlined, FileTextOutlined, MenuOutlined,
+  ReloadOutlined,
   SearchOutlined,
   SolutionOutlined,
   SyncOutlined,
@@ -127,6 +128,13 @@ function MenuComponent(props) {
       "vacation",
       <EditOutlined />,
       menuVacation,
+      null
+    ),
+    getItem(
+      <Link to={PAGE_URL.CHANGEPASS}>Thay đổi mật khẩu</Link>,
+      "changepass",
+      <ReloadOutlined />,
+      null,
       null
     ),
   ];

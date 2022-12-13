@@ -17,4 +17,5 @@ export const PAGE_URL = {
     VACATION: "/dang-ky-nghi-phep",
     MANAGE: "/quan-ly-dang-ky-nghi-phep",
   },
+  CHANGEPASS: "/thay-doi-may-khau",
 };

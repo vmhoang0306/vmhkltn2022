@@ -37,30 +37,32 @@ function EditBtn(props: IProps) {
   const [requestingEdit, setRequestingEdit] = useState(false);
 
   useEffect(() => {
-    formedit.setFieldsValue({
-      fullname: idEdit.fullname!,
-      email: idEdit.contact?.email!,
-      phonenumber: idEdit.contact?.phonenumber!,
-      identitycardid: idEdit.identitycardid!,
-      socialinsuranceid: idEdit.socialinsuranceid!,
-      taxcode: idEdit.taxcode!,
-      dateofbirth: dayjs(
-        Utils.date.formatDateInput(idEdit.dateofbirth!),
-        "YYYY/MM/DD"
-      ),
-      startdatework: dayjs(
-        Utils.date.formatDateInput(idEdit.startdatework!),
-        "YYYY/MM/DD"
-      ),
-      gender: idEdit.gender,
-      department: idEdit.department?._id,
-      store: idEdit.store?._id,
-      position: idEdit.position?._id,
-      shift: idEdit.shift?._id,
-      isactive: idEdit.isactive,
-    });
+    if (showEdit) {
+      formedit.setFieldsValue({
+        fullname: idEdit.fullname!,
+        email: idEdit.contact?.email!,
+        phonenumber: idEdit.contact?.phonenumber!,
+        identitycardid: idEdit.identitycardid!,
+        socialinsuranceid: idEdit.socialinsuranceid!,
+        taxcode: idEdit.taxcode!,
+        dateofbirth: dayjs(
+          Utils.date.formatDateInput(idEdit.dateofbirth!),
+          "YYYY/MM/DD"
+        ),
+        startdatework: dayjs(
+          Utils.date.formatDateInput(idEdit.startdatework!),
+          "YYYY/MM/DD"
+        ),
+        gender: idEdit.gender,
+        department: idEdit.department?._id,
+        store: idEdit.store?._id,
+        position: idEdit.position?._id,
+        shift: idEdit.shift?._id,
+        isactive: idEdit.isactive,
+      });
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [showEdit]);
 
   const handleCancelEdit = () => {
     setShowEdit(false);

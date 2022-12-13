@@ -26,6 +26,9 @@ export const UtilsRoute = {
       case PAGE_URL.TRANSFER.TRANSFER:
         breadcrumbs.push({ path: "", breadcrumbName: "Thuyên chuyển" });
         break;
+      case PAGE_URL.CHANGEPASS:
+        breadcrumbs.push({ path: "", breadcrumbName: "Thay đổi mật khẩu" });
+        break;
     }
 
     return breadcrumbs;

@@ -13,7 +13,7 @@ export const login = async (req, res) => {
     }
 
     const userInfo = mongooseHelper.ToObject(
-      await IEmployeeInfo.findOne({ username: username })
+      await IEmployeeInfo.findOne({ username: username, isactive: true })
     );
 
     if (userInfo === null) {
@@ -32,6 +32,36 @@ export const login = async (req, res) => {
     res
       .status(200)
       .json({ status: "success", message: "Đăng nhập thành công!" });
+  } catch (e) {
+    res.status(400).json({ status: "error", message: e.message });
+  }
+};
+
+export const changepass = async (req, res) => {
+  try {
+    const { username, oldpass, newpass } = req.body;
+
+    const userInfo = mongooseHelper.ToObject(
+      await IEmployeeInfo.findOne({ username: username, isactive: true })
+    );
+
+    if (oldpass !== userInfo.password) {
+      return res.status(200).json({
+        data: false,
+        status: "error",
+        message: "Mật khẩu hiện tại sai!",
+      });
+    } else {
+      await IEmployeeInfo.findOneAndUpdate(
+        { username: username },
+        { password: newpass }
+      );
+      res.status(200).json({
+        data: true,
+        status: "success",
+        message: "Cập nhật mật khẩu thành công!",
+      });
+    }
   } catch (e) {
     res.status(400).json({ status: "error", message: e.message });
   }

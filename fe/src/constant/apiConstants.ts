@@ -1,5 +1,6 @@
 export const ApiConstants = {
   login: "/api/auth/login",
+  changepass: "/api/auth/changepass",
   
   employeeinfo: {
     getall: "/api/employeeinfo/getall",
