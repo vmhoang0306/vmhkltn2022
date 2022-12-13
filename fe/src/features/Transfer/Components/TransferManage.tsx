@@ -1,62 +1,144 @@
-import { PlusCircleOutlined } from "@ant-design/icons";
-import { Col, Form, Input, Row, Select, Space, Table } from "antd";
+import { DeleteOutlined, PlusCircleOutlined } from "@ant-design/icons";
+import { Col, Form, Input, Row, Space, Table, Tag } from "antd";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { ButtonUI, TextUI, TitleUI } from "../../../components/general";
 import { ModalConfirm } from "../../../components/modules";
 import { ApiConstants } from "../../../constant";
 import { Notify } from "../../../helpers";
-import { IDepartment, IStore } from "../../../models";
+import { IDepartment, IEmployeeInfo, ITransfer } from "../../../models";
 import SelectBase from "../../common/components/SelectBase";
 import LoadingFullWidth from "../../common/LoadingFullWidth";
-
-const { Option } = Select;
+import { AuthContext } from "../../Login/Context/AuthContext";
 
 function TransferManage() {
   const [form] = Form.useForm();
+  const authInfo = useContext(AuthContext);
+
   const [lstData, setLstData] = useState<any[]>();
+  const [userInfo, setUserInfo] = useState<IEmployeeInfo>();
   const [lstDpm, setLstDpm] = useState<any[]>([]);
-  const [lstSt, setLstSt] = useState<any[]>([]);
-  const [showAdd, setShowAdd] = useState(false);
-  const [requesting, setRequesting] = useState(false);
   const [requestingInit, setRequestingInit] = useState(false);
-  const [transferType, setTransferType] = useState(1);
+
+  const [showAdd, setShowAdd] = useState(false);
+  const [requestingAdd, setRequestingAdd] = useState(false);
+
+  const [idDelete, setIdDelete] = useState<ITransfer>();
+  const [showDelete, setShowDelete] = useState(false);
+  const [requestingDelete, setRequestingDelete] = useState(false);
 
   useEffect(() => {
-    const initData = async () => {
-      const urlDpm = ApiConstants.department;
-      const urlSt = ApiConstants.store;
-
-      setRequestingInit(true);
-      const dpm: any = await axios.get(urlDpm);
-      const st: any = await axios.get(urlSt);
-      setRequestingInit(false);
-
-      if (dpm.data.status === "success" && dpm.data.data?.length! > 0) {
-        setLstDpm(formatDataDpm(dpm.data.data));
-      } else {
-        Notify.error(
-          "",
-          dpm.data.message
-            ? dpm.data.message
-            : "Xảy ra lỗi khi lấy danh sách phòng ban!"
-        );
-      }
-
-      if (st.data.status === "success" && dpm.data.data?.length! > 0) {
-        setLstSt(formatDataStore(st.data.data));
-      } else {
-        Notify.error(
-          "",
-          st.data.message
-            ? st.data.message
-            : "Xảy ra lỗi khi lấy danh sách siêu thị!"
-        );
-      }
-    };
-
     initData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if ((!requestingAdd && showAdd) || (!requestingDelete && showDelete)) {
+      getList(userInfo?._id!);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [requestingAdd, requestingDelete]);
+
+  const initData = async () => {
+    const urlDpm = ApiConstants.department;
+    const urlDetail = ApiConstants.employeeinfo.getbyid;
+    const params = { username: authInfo.username };
+
+    setRequestingInit(true);
+    const dpm: any = await axios.get(urlDpm);
+    const detail: any = await axios.get(urlDetail, { params });
+
+    if (dpm.data.status === "success" && dpm.data.data?.length! > 0) {
+      setLstDpm(formatDataDpm(dpm.data.data));
+    }
+
+    if (detail.data.status === "success" && dpm.data.data !== null) {
+      getList(detail.data.data._id);
+      setUserInfo(detail.data.data);
+    }
+    setRequestingInit(false);
+  };
+
+  const getList = async (_id: string) => {
+    const urlGetList = ApiConstants.transfer.report.getlist;
+    const params = { username: _id };
+    const res: any = await axios.get(urlGetList, { params });
+    if (res.data.status === "success") {
+      setLstData(res.data.data);
+    }
+  };
+
+  const columns = [
+    {
+      title: <TextUI strong text="Username" />,
+      dataIndex: "username",
+      key: "username",
+      render: (_text: string, record: ITransfer) => {
+        return <TextUI text={record.username?.username!} />;
+      },
+    },
+    {
+      title: <TextUI strong text="Họ tên" />,
+      dataIndex: "fullname",
+      key: "fullname",
+      render: (_text: string, record: ITransfer) => {
+        return <TextUI text={record.username?.fullname!} />;
+      },
+    },
+    {
+      title: <TextUI strong text="Phòng ban hiện tại" />,
+      dataIndex: "currentdepartment",
+      key: "currentdepartment",
+      render: (_text: string, record: ITransfer) => {
+        return <TextUI text={record.currentdepartment?.departmentname!} />;
+      },
+    },
+    {
+      title: <TextUI strong text="Phòng ban" />,
+      key: "newdepartment",
+      render: (_text: string, record: ITransfer) => {
+        return <TextUI text={record.newdepartment?.departmentname!} />;
+      },
+    },
+    {
+      title: <TextUI strong text="Trạng thái" />,
+      dataIndex: "status",
+      key: "status",
+      render: (_text: string, record: ITransfer) => {
+        return (
+          <>
+            {record.status === -1 && <Tag color="yellow">Từ chối</Tag>}
+            {record.status === 0 && <Tag color="yellow">Chờ duyệt</Tag>}
+            {record.status === 1 && <Tag color="yellow">Duyệt 1</Tag>}
+            {record.status === 2 && <Tag color="yellow">Duyệt 2</Tag>}
+          </>
+        );
+      },
+    },
+    {
+      title: (
+        <TextUI className="d-flex justify-content-flex-end" strong text="#" />
+      ),
+      key: "#",
+      render: (_text: string, record: ITransfer) => {
+        return (
+          <Space className="w-100 d-flex justify-content-flex-end">
+            {record.status === 0 && (
+              <ButtonUI
+                color="danger"
+                icon={<DeleteOutlined />}
+                onClick={() => {
+                  setIdDelete(record);
+                  setShowDelete(true);
+                }}
+              />
+            )}
+          </Space>
+        );
+      },
+      width: 50,
+    },
+  ];
 
   const formatDataDpm = (data: IDepartment[]) => {
     let results: { value: any; title: any }[] = [];
@@ -65,16 +147,28 @@ function TransferManage() {
     });
     return results;
   };
-  const formatDataStore = (data: IStore[]) => {
-    let results: { value: any; title: any }[] = [];
-    data.forEach((item) => {
-      results.push({ value: item._id, title: item.storename });
-    });
-    return results;
-  };
 
-  const onChangeType = (e: number) => {
-    setTransferType(e);
+  const handleCancelDelete = () => {
+    setRequestingDelete(false);
+    setShowDelete(false);
+  };
+  const handleConfirmDelete = async () => {
+    const url = ApiConstants.transfer.report.delete;
+    const data: { _id: string | undefined } = { _id: idDelete?._id };
+
+    setRequestingDelete(true);
+    const res: any = await axios.post(url, data);
+    setRequestingDelete(false);
+
+    if (res.data.data > 0) {
+      Notify.success(
+        "",
+        res.data.message ? res.data.message : "Xóa phiếu thành công!"
+      );
+      handleCancelDelete();
+    } else {
+      Notify.error("", res.data.message ? res.data.message : "Xảy ra lỗi!");
+    }
   };
 
   const handleCancelAdd = () => {
@@ -85,9 +179,47 @@ function TransferManage() {
     setShowAdd(true);
   };
 
-  const handleConfirm = () => {};
+  const handleConfirm = () => {
+    form.submit();
+  };
 
-  const handleFinish = async (e: any) => {};
+  const handleFinish = async (e: any) => {
+    const newdepartment = e.new;
+
+    if (newdepartment === userInfo?.department?._id) {
+      Notify.warning("", "Vui lòng chọn phòng ban khác phòng ban hiện tại!");
+      form.resetFields(["new"]);
+    } else {
+      const url = ApiConstants.transfer.report.create;
+      const data = {
+        username: userInfo?._id,
+        currentdepartment: userInfo?.department?._id,
+        newdepartment: newdepartment,
+        reason: e.reason,
+        status: 0,
+      };
+
+      setRequestingAdd(true);
+      const res: any = await axios.post(url, data);
+      setRequestingAdd(false);
+
+      if (res.data.status === "success") {
+        handleCancelAdd();
+        Notify.success(
+          "",
+          res.data.message ? res.data.message : "Tạo phiếu thành công!"
+        );
+      } else {
+        console.log(res.data.message);
+        Notify.error(
+          "",
+          res.data.message && res.status === 200
+            ? res.data.message
+            : "Xảy ra lỗi!"
+        );
+      }
+    }
+  };
 
   return !requestingInit ? (
     <React.Fragment>
@@ -113,6 +245,7 @@ function TransferManage() {
                 color="success"
                 icon={<PlusCircleOutlined />}
                 text="Tạo phiếu mới"
+                loading={requestingAdd}
                 onClick={handleAdd}
               />
             </Col>
@@ -122,7 +255,7 @@ function TransferManage() {
               dataSource={lstData}
               pagination={false}
               scroll={{ y: 360 }}
-              columns={[]}
+              columns={columns}
               rowKey="index"
             />
           </Row>
@@ -148,9 +281,20 @@ function TransferManage() {
             onFinish={handleFinish}
           >
             <Form.Item
-              className="w-100"
-              name="transfertype"
-              label={<TextUI strong text="Loại đăng ký" />}
+              name="old"
+              label={<TextUI strong text="Phòng ban hiện tại" />}
+            >
+              <Input
+                disabled
+                defaultValue={userInfo?.department!.departmentname!}
+                className="w-100 min-width-100px"
+                placeholder="Phòng ban hiện tại"
+              />
+            </Form.Item>
+
+            <Form.Item
+              name="new"
+              label={<TextUI strong text="Phòng ban mới" />}
               rules={[
                 {
                   required: true,
@@ -158,51 +302,13 @@ function TransferManage() {
                 },
               ]}
             >
-              <Select
-                className="w-100 min-width-100px"
-                placeholder="Chọn loại đăng ký"
-                onChange={onChangeType}
-              >
-                <Option value={1}>{"Thuyên chuyển siêu thị"}</Option>
-                <Option value={2}>{"Thuyên chuyển phòng ban"}</Option>
-              </Select>
+              <SelectBase
+                placeholder="Chọn phòng ban"
+                requesting={requestingInit}
+                data={lstDpm}
+                isShowChooseAll={false}
+              />
             </Form.Item>
-
-            {transferType === 1 ? (
-              <Form.Item
-                name="new"
-                label={<TextUI strong text="Siêu thị mới" />}
-                rules={[
-                  {
-                    required: true,
-                    message: "Không được bỏ trống trường này!",
-                  },
-                ]}
-              >
-                <SelectBase
-                  placeholder="Chọn siêu thị"
-                  requesting={requestingInit}
-                  data={lstSt}
-                />
-              </Form.Item>
-            ) : (
-              <Form.Item
-                name="new"
-                label={<TextUI strong text="Phòng ban mới" />}
-                rules={[
-                  {
-                    required: true,
-                    message: "Không được bỏ trống trường này!",
-                  },
-                ]}
-              >
-                <SelectBase
-                  placeholder="Chọn phòng ban"
-                  requesting={requestingInit}
-                  data={lstDpm}
-                />
-              </Form.Item>
-            )}
 
             <Form.Item
               name="reason"
@@ -218,6 +324,19 @@ function TransferManage() {
             </Form.Item>
           </Form>
         </React.Fragment>
+      </ModalConfirm>
+
+      <ModalConfirm
+        divider
+        visible={showDelete}
+        setVisible={setShowDelete}
+        title={"Xóa phiếu"}
+        handleConfirm={handleConfirmDelete}
+        loadingBtnConfirm={requestingDelete}
+        handleCancel={handleCancelDelete}
+        width={768}
+      >
+        <TextUI text={"Phiếu thuyên chuyển này sẽ bị xóa!"} />
       </ModalConfirm>
     </React.Fragment>
   ) : (

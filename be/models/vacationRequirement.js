@@ -4,7 +4,6 @@ const { Schema } = mongoose;
 const VacationRequirementSchema = new Schema(
   {
     username: { type: String, require: true },
-    requirementtype: { type: Number, require: true },
     fromdate: { type: Date, require: true },
     todate: { type: Date, require: true },
     status: { type: Number, require: true },

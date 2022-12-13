@@ -10,6 +10,7 @@ import authRouter from "./routes/authRoute.js";
 import departmentRouter from "./routes/departmentRouter.js";
 import positionRouter from "./routes/positionRouter.js";
 import storeRouter from "./routes/storeRouter.js";
+import transferRouter from "./routes/transferRoute.js";
 
 dotenv.config();
 
@@ -29,6 +30,7 @@ app.use((_req, res, next) => {
   next();
 });
 
+app.use("/api/transfer", transferRouter);
 app.use("/api/employeeinfo", employeeInfoRouter);
 app.use("/api/store", storeRouter)
 app.use("/api/department", departmentRouter)

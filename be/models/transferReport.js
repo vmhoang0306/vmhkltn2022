@@ -3,7 +3,11 @@ const { Schema } = mongoose;
 
 const TransferReportSchema = new Schema(
   {
-    username: { type: String, require: true },
+    username: {
+      type: mongoose.Types.ObjectId,
+      required: true,
+      ref: "employeeinfo",
+    },
     currentdepartment: {
       type: mongoose.Types.ObjectId,
       required: true,
@@ -14,7 +18,9 @@ const TransferReportSchema = new Schema(
       required: true,
       ref: "department",
     },
+    reason: { type: String, require: true },
     status: { type: Number, require: true },
+    isdelete: { type: Boolean, require: true },
   },
   {
     timestamps: true,

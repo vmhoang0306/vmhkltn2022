@@ -109,7 +109,13 @@ function EmployeeInfoFind() {
       if (res.data.status === "success") {
         setLstData(res.data.data);
       } else {
-        Notify.error("", res.data.message ? res.data.message : "Xảy ra lỗi!");
+        console.log(res.data.message);
+        Notify.error(
+          "",
+          res.data.message && res.status === 200
+            ? res.data.message
+            : "Xảy ra lỗi!"
+        );
       }
     } else {
       Notify.warning("", "Hãy nhập từ khóa tìm kiếm!");
@@ -156,7 +162,7 @@ function EmployeeInfoFind() {
                 onClick={handleSearch}
               />
             </Col>
-            
+
             {requesting ? (
               <Space className="w-100 justify-content-center">
                 <LoadingFullWidth />
