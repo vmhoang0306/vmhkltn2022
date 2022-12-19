@@ -37,11 +37,12 @@ function LoginPage() {
       if (Utils.string.isNullOrEmpty(authInfo.username)) {
         Notify.error("", "Xảy ra lỗi mạng!");
       }
-    }, 6000);
+    }, 10000);
 
     const res: any = await axios.post(url, data);
 
     if (res.data.status === "success") {
+      
       authInfo.login(data.username);
       history.push(PAGE_URL.EMPLOYEEINFO.INFO);
     } else {

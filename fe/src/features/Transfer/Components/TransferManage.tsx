@@ -267,6 +267,7 @@ function TransferManage() {
         setVisible={setShowAdd}
         handleConfirm={handleConfirm}
         handleCancel={handleCancelAdd}
+        loadingBtnConfirm={requestingAdd}
         title={"Tạo phiếu thuyên chuyển"}
         width={600}
         divider

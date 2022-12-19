@@ -1,6 +1,7 @@
-import { Layout } from "antd";
+import { Layout, Space } from "antd";
 import { Content, Footer } from "antd/es/layout/layout";
-import { useCallback, useEffect } from "react";
+import axios from "axios";
+import { useCallback, useEffect, useState } from "react";
 import {
   BrowserRouter,
   Redirect,
@@ -9,10 +10,11 @@ import {
   useHistory,
   withRouter,
 } from "react-router-dom";
-import { BreadcrumbUI } from "./components/general";
+import { BreadcrumbUI, TextUI, TitleUI } from "./components/general";
+import { AlertUI } from "./components/general/AlertUI";
 import { FooterComponent } from "./components/layout/Footer";
 import HeaderComponent from "./components/layout/Header";
-import { PAGE_URL } from "./constant";
+import { ApiConstants, PAGE_URL } from "./constant";
 import ChangePassPage from "./features/ChangePassword/pages/ChangePassPage";
 import PageNotFound from "./features/common/PageNotFound";
 import EmployeeInfoPage from "./features/EmployeeInfo/pages/EmployeeInfoPage";
@@ -26,9 +28,11 @@ import TransferPage from "./features/Transfer/Pages/TransferPage";
 import TransferApprovalManage from "./features/TransferApproval/Components/TransferApprovalManage";
 import VacationPage from "./features/Vacation/Pages/VacationPage";
 import VacationApprovalPage from "./features/VacationApproval/Pages/TransferApprovalPage";
+import { Utils } from "./utils";
 
 function App() {
   const history = useHistory();
+  const [isTimekeeping, setIsTimekeeping] = useState(false);
 
   useEffect(() => {
     if (!checkCookie()) {
@@ -39,7 +43,7 @@ function App() {
 
   const setCookie = (uid: string, isLogin: boolean) => {
     var d = new Date();
-    d.setTime(d.getTime() + 30 * 60 * 1000);
+    d.setTime(d.getTime() + 60 * 60 * 1000);
     var expires =
       "expires=" +
       (isLogin ? d.toUTCString() : "Thu, 01 Jan 1970 00:00:00 UTC");
@@ -65,6 +69,17 @@ function App() {
     return username;
   };
 
+  const getIsTimekeeping = async () => {
+    const url = ApiConstants.timekeeping.create;
+    const res: any = await axios.post(url, {
+      username: getCookie(),
+    });
+
+    if (res.data.status === "success") {
+      setIsTimekeeping(res.data.data.ischeck);
+    }
+  };
+
   const checkCookie = () => {
     if (getCookie().length > 0) {
       return true;
@@ -75,6 +90,7 @@ function App() {
 
   const login = useCallback((uid: string) => {
     setCookie(uid, true);
+    getIsTimekeeping();
     history.push(PAGE_URL.EMPLOYEEINFO.INFO);
     window.location.reload();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -86,6 +102,28 @@ function App() {
     window.location.reload();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const checkTimekeeping = useCallback(
+    (uid: string, hour: any, date: any) => {
+      const check = async () => {
+        const url = ApiConstants.timekeeping.check;
+        const data = {
+          username: uid,
+          hour: hour,
+          date: new Date(Utils.date.formatDateInput(date)!),
+        };
+
+        const res: any = await axios.post(url, data);
+
+        if (res.data.status === "success") {
+          setIsTimekeeping(true);
+        }
+      };
+
+      check();
+    },
+    []
+  );
 
   const routes = checkCookie() ? (
     <Switch>
@@ -161,6 +199,8 @@ function App() {
       <AuthContext.Provider
         value={{
           username: getCookie(),
+          isTimekeeping: isTimekeeping,
+          checkTimekeeping: checkTimekeeping,
           login: login,
           logout: logout,
         }}
@@ -169,6 +209,29 @@ function App() {
           <Layout className="min-height-100vh bg-white">
             <HeaderComponent />
 
+            {!isTimekeeping && (
+              <AlertUI
+                banner
+                type="error"
+                description={
+                  <Space className="d-flex justify-content-space-between">
+                    <TitleUI
+                      className="txt-danger"
+                      text="Bạn chưa chấm công hôm nay!"
+                    />
+
+                    <TextUI
+                      className="hv-textui-link txt-primary"
+                      text="Đến trang chấm công"
+                      onClick={() => {
+                        history.push(PAGE_URL.TIMEKEEPING.TIMEKEEPING);
+                        window.location.reload();
+                      }}
+                    />
+                  </Space>
+                }
+              />
+            )}
             <Content className="px-5 pt-2 pb-5 m-0">
               <BreadcrumbUI />
               {routes}

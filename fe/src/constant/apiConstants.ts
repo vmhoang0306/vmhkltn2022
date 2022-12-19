@@ -25,4 +25,9 @@ export const ApiConstants = {
       delete: "/api/transfer/delete",
     },
   },
+
+  timekeeping: {
+    create: "/api/timekeeping/create",
+    check: "/api/timekeeping/check",
+  }
 };

@@ -5,8 +5,8 @@ const TimekeepingSchema = new Schema(
   {
     username: { type: String, require: true },
     ischeck: { type: Boolean, require: true },
-    hour: { type: Float, require: true },
-    date: { type: Number, require: true },
+    hour: { type: Number, require: true },
+    date: { type: Date, require: true },
   },
   {
     timestamps: true,

@@ -1,16 +1,17 @@
 import { ClockCircleOutlined } from "@ant-design/icons";
 import { Form, Row, Space, Table } from "antd";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import EmptyCardNoHeader from "../../../components/card/EmptyCardNoHeader";
 import { ButtonUI, TextUI, TitleUI } from "../../../components/general";
 import { AlertUI } from "../../../components/general/AlertUI";
 import { Utils } from "../../../utils";
 import LoadingFullWidth from "../../common/LoadingFullWidth";
+import { AuthContext } from "../../Login/Context/AuthContext";
 
 function TimekeepingManage() {
   const [form] = Form.useForm();
   const today = new Date();
-  const [data, setData] = useState<any>({ ischeck: false });
+  const authInfo = useContext(AuthContext);
   const [lstHistory, setLstHistory] = useState<any>();
   const [requesting, setRequesting] = useState(false);
 
@@ -45,10 +46,9 @@ function TimekeepingManage() {
       const time = hour + minute / 60;
       let timekeeping;
 
-      if(hour <= 12){
+      if (hour <= 12) {
         timekeeping = ENDTIME - 1 - time;
-      }
-      else {
+      } else {
         timekeeping = ENDTIME - time;
       }
 
@@ -61,7 +61,9 @@ function TimekeepingManage() {
     form.submit();
   };
 
-  const handleFinish = async () => {};
+  const handleFinish = async () => {
+    authInfo.checkTimekeeping(authInfo.username, CalculateTimekeeping(), today);
+  };
 
   return !requesting ? (
     <React.Fragment>
@@ -87,18 +89,20 @@ function TimekeepingManage() {
                       text={Utils.date.formatDate(today)}
                       level={1}
                       className={`my-1 txt-${
-                        data.ischeck! ? "success" : "danger"
+                        authInfo.isTimekeeping ? "success" : "danger"
                       } txt-center`}
                     />
                     <AlertUI
-                      type={data.ischeck! ? "success" : "error"}
+                      type={authInfo.isTimekeeping ? "success" : "error"}
                       description={
                         <TitleUI
                           className={
-                            data.ischeck! ? "txt-success" : "txt-danger"
+                            authInfo.isTimekeeping
+                              ? "txt-success"
+                              : "txt-danger"
                           }
                           text={
-                            data.ischeck!
+                            authInfo.isTimekeeping
                               ? "Bạn đã chấm công hôm nay!"
                               : "Bạn chưa chấm công hôm nay!"
                           }
@@ -120,21 +124,19 @@ function TimekeepingManage() {
                       />
                     </Space>
 
-                    <ButtonUI
-                      icon={<ClockCircleOutlined />}
-                      text={
-                        Utils.date.getHour(today) < STARTTIME ||
-                        Utils.date.getHour(today) > ENDTIME
-                          ? "Ngoài giờ chấm công"
-                          : "Chấm công"
-                      }
-                      onClick={handleTimekeeping}
-                      className="w-100"
-                      disabled={
-                        Utils.date.getHour(today) < STARTTIME ||
-                        Utils.date.getHour(today) > ENDTIME
-                      }
-                    />
+                    {!authInfo.isTimekeeping && (
+                      <ButtonUI
+                        icon={<ClockCircleOutlined />}
+                        text={
+                          Utils.date.getHour(today) > ENDTIME
+                            ? "Ngoài giờ chấm công"
+                            : "Chấm công"
+                        }
+                        onClick={handleTimekeeping}
+                        className="w-100"
+                        disabled={Utils.date.getHour(today) > ENDTIME}
+                      />
+                    )}
                   </Space>
                 </Form>
               }
