@@ -27,6 +27,7 @@ export const ApiConstants = {
   },
 
   timekeeping: {
+    getlisttimekeeping: "/api/timekeeping/getlisttimekeeping",
     create: "/api/timekeeping/create",
     check: "/api/timekeeping/check",
   }

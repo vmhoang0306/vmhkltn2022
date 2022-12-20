@@ -31,14 +31,6 @@ function LoginPage() {
     };
 
     setRequesting(true);
-
-    setTimeout(() => {
-      setRequesting(false);
-      if (Utils.string.isNullOrEmpty(authInfo.username)) {
-        Notify.error("", "Xảy ra lỗi mạng!");
-      }
-    }, 10000);
-
     const res: any = await axios.post(url, data);
 
     if (res.data.status === "success") {

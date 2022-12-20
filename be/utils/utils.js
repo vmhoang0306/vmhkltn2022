@@ -26,6 +26,11 @@ export const Utils = {
   },
 
   date: {
+    getDay: (str) => {
+      const date = new Date(str);
+      return date.getDay();
+    },
+
     getTime: (str) => {
       const date = new Date(str);
       const HOUR = `0${date.getHours()}`.slice(-2);
@@ -114,5 +119,13 @@ export const Utils = {
       const d = new Date(date);
       return new Date(d.getFullYear(), d.getMonth() + 1, 0);
     },
+
+    nextdate: (date) => {
+      const d = new Date(date);
+      const milis_date = d.getTime();
+      const milis_number =  24 * 3600 * 1000;
+      const new_milis = milis_date + milis_number;
+      return new Date(new_milis);
+    }
   },
 };

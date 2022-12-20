@@ -1,9 +1,12 @@
 import { ClockCircleOutlined } from "@ant-design/icons";
-import { Form, Row, Space, Table } from "antd";
-import React, { useContext, useState } from "react";
+import { Form, Row, Space, Table, Tag } from "antd";
+import axios from "axios";
+import React, { useContext, useEffect, useState } from "react";
 import EmptyCardNoHeader from "../../../components/card/EmptyCardNoHeader";
 import { ButtonUI, TextUI, TitleUI } from "../../../components/general";
 import { AlertUI } from "../../../components/general/AlertUI";
+import { ApiConstants } from "../../../constant";
+import { Notify } from "../../../helpers";
 import { Utils } from "../../../utils";
 import LoadingFullWidth from "../../common/LoadingFullWidth";
 import { AuthContext } from "../../Login/Context/AuthContext";
@@ -15,6 +18,33 @@ function TimekeepingManage() {
   const [lstHistory, setLstHistory] = useState<any>();
   const [requesting, setRequesting] = useState(false);
 
+  useEffect(() => {
+    initData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const initData = async () => {
+    const url = ApiConstants.timekeeping.getlisttimekeeping;
+    const params = { username: authInfo.username };
+
+    setRequesting(true);
+    const res: any = await axios.get(url, { params });
+    setRequesting(false);
+
+    if (res.data.status === "success") {
+      setLstHistory(res.data.data);
+    } else {
+      console.log(res.data.message);
+      Notify.error(
+        "",
+        res.data.message && res.status === 200
+          ? res.data.message
+          : "Xảy ra lỗi!"
+      );
+      setRequesting(false);
+    }
+  };
+
   //giờ bắt đầu chấm công
   const STARTTIME = 8;
   //giờ kết thúc chấm công
@@ -23,18 +53,33 @@ function TimekeepingManage() {
   const columns = [
     {
       title: <TextUI strong text="Ngày chấm" />,
-      dataIndex: "username",
-      key: "username",
-      width: 125,
+      dataIndex: "date",
+      key: "date",
+      render: (_text: string, record: any) => {
+        return <TextUI text={Utils.date.formatDate(record.date)!} />;
+      },
+      width: 200,
     },
     {
       title: <TextUI strong text="Thông tin" />,
-      dataIndex: "fullname",
-      key: "fullname",
+      dataIndex: "ischeck",
+      key: "ischeck",
+      render: (_text: string, record: any) => {
+        return (
+          <>
+            {record.ischeck ? (
+              <Tag color="success">Đã chấm công</Tag>
+            ) : (
+              <Tag color="error">Không chấm công</Tag>
+            )}
+          </>
+        );
+      },
     },
     {
       title: <TextUI strong text="Số giờ công" />,
-      key: "phonenumber",
+      dataIndex: "hour",
+      key: "hour",
       width: 125,
     },
   ];

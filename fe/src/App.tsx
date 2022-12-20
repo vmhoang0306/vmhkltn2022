@@ -35,6 +35,13 @@ function App() {
   const [isTimekeeping, setIsTimekeeping] = useState(false);
 
   useEffect(() => {
+    if (checkCookie()) {
+      getIsTimekeeping();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
     if (!checkCookie()) {
       history.push("/login");
     }
@@ -76,7 +83,7 @@ function App() {
     });
 
     if (res.data.status === "success") {
-      setIsTimekeeping(res.data.data.ischeck);
+      setIsTimekeeping(res.data.data[0].ischeck);
     }
   };
 
@@ -92,7 +99,6 @@ function App() {
     setCookie(uid, true);
     getIsTimekeeping();
     history.push(PAGE_URL.EMPLOYEEINFO.INFO);
-    window.location.reload();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -103,27 +109,24 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const checkTimekeeping = useCallback(
-    (uid: string, hour: any, date: any) => {
-      const check = async () => {
-        const url = ApiConstants.timekeeping.check;
-        const data = {
-          username: uid,
-          hour: hour,
-          date: new Date(Utils.date.formatDateInput(date)!),
-        };
-
-        const res: any = await axios.post(url, data);
-
-        if (res.data.status === "success") {
-          setIsTimekeeping(true);
-        }
+  const checkTimekeeping = useCallback((uid: string, hour: any, date: any) => {
+    const check = async () => {
+      const url = ApiConstants.timekeeping.check;
+      const data = {
+        username: uid,
+        hour: hour,
+        date: new Date(Utils.date.formatDateInput(date)!),
       };
 
-      check();
-    },
-    []
-  );
+      const res: any = await axios.post(url, data);
+
+      if (res.data.status === "success") {
+        setIsTimekeeping(true);
+      }
+    };
+
+    check();
+  }, []);
 
   const routes = checkCookie() ? (
     <Switch>
