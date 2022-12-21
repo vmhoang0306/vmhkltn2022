@@ -21,7 +21,7 @@ export const Utils = {
       return false;
     },
   },
-  
+
   number: {
     isNullOrEmpty: (number: number) => {
       try {
@@ -36,12 +36,33 @@ export const Utils = {
   },
 
   date: {
+    getDay: (str: any) => {
+      const date = new Date(str);
+      const day = date.getDay();
+      switch (day) {
+        case 0:
+          return "Chủ nhật";
+        case 1:
+          return "Thứ 2";
+        case 2:
+          return "Thứ 3";
+        case 3:
+          return "Thứ 4";
+        case 4:
+          return "Thứ 5";
+        case 5:
+          return "Thứ 6";
+        case 6:
+          return "Thứ 7";
+      }
+    },
+
     getTime: (str: any) => {
       const date = new Date(str);
       const HOUR = `0${date.getHours()}`.slice(-2);
       const MINUTE = `0${date.getMinutes()}`.slice(-2);
 
-      return HOUR + ':' + MINUTE;
+      return HOUR + ":" + MINUTE;
     },
 
     formatDate: (str: any) => {
@@ -49,8 +70,8 @@ export const Utils = {
       const DATE = `0${date.getDate()}`.slice(-2);
       const MONTH = `0${date.getMonth() + 1}`.slice(-2);
       const YEAR = `${date.getFullYear()}`;
-      const strdate = DATE + '-' + MONTH + '-' + YEAR;
-      if (strdate === 'NaN-aN-aN') {
+      const strdate = DATE + "-" + MONTH + "-" + YEAR;
+      if (strdate === "NaN-aN-aN") {
         return undefined;
       } else {
         return strdate;
@@ -62,8 +83,8 @@ export const Utils = {
       const DATE = `0${date.getDate()}`.slice(-2);
       const MONTH = `0${date.getMonth() + 1}`.slice(-2);
       const YEAR = `${date.getFullYear()}`;
-      const strdate = YEAR + '-' + MONTH + '-' + DATE;
-      if (strdate === 'NaN-aN-aN') {
+      const strdate = YEAR + "-" + MONTH + "-" + DATE;
+      if (strdate === "NaN-aN-aN") {
         return undefined;
       } else {
         return strdate;
@@ -77,7 +98,7 @@ export const Utils = {
       const new_milis = milis_date - milis_number;
       return new Date(new_milis);
     },
-    
+
     getYear: (year: any) => {
       if (year === 0 || year === null || year === undefined || isNaN(year)) {
         return -1;
@@ -85,9 +106,14 @@ export const Utils = {
       let yearReturn = new Date(year);
       return yearReturn.getFullYear();
     },
-    
+
     getMonth: (month: any) => {
-      if (month === 0 || month === null || month === undefined || isNaN(month)) {
+      if (
+        month === 0 ||
+        month === null ||
+        month === undefined ||
+        isNaN(month)
+      ) {
         return -1;
       }
       let monthReturn = new Date(month);

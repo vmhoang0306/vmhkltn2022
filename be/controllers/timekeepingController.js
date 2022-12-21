@@ -25,6 +25,8 @@ export const createTimekeeping = async (req, res) => {
         const newTimekeeping = new ITimekeeping({
           username,
           ischeck: false,
+          isvacation: false,
+          issalary: false,
           hour: 0,
           date: Utils.date.formatDateInput(
             new Date(today.getFullYear(), today.getMonth(), i)
@@ -58,7 +60,7 @@ export const checkTimekeeping = async (req, res) => {
 
     await ITimekeeping.findOneAndUpdate(
       { username },
-      { ischeck: true, hour, date }
+      { ischeck: true, issalary: true, hour, date }
     );
 
     res.status(200).json({

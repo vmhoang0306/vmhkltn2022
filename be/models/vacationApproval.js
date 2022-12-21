@@ -11,7 +11,7 @@ const VacationApprovalSchema = new Schema(
     status: { type: Number, require: true },
     note: { type: String, require: true },
     approveduser: { type: String, require: false },
-    approveddate: { type: String, require: false },
+    approveddate: { type: Date, require: false },
   },
   {
     timestamps: true,

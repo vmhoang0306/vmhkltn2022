@@ -99,6 +99,7 @@ function App() {
     setCookie(uid, true);
     getIsTimekeeping();
     history.push(PAGE_URL.EMPLOYEEINFO.INFO);
+    window.location.reload();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

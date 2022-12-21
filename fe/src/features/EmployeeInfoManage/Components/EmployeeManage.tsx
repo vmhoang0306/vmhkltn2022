@@ -600,7 +600,7 @@ function EmployeeManage() {
       >
         <React.Fragment>
           <Row className="mx-1 d-flex justify-space-between" gutter={[0, 10]}>
-            <Col xl={24} lg={24} md={24} sm={24} xs={24}>
+            <Col span={24}>
               <Divider orientation="left" orientationMargin="0">
                 <Space direction="horizontal">
                   <InfoCircleOutlined />
@@ -645,7 +645,7 @@ function EmployeeManage() {
           </Row>
 
           <Row className="d-flex justify-space-between" gutter={[0, 10]}>
-            <Col xl={24} lg={24} md={24} sm={24} xs={24}>
+            <Col span={24}>
               <Divider orientation="left" orientationMargin="0">
                 <Space direction="horizontal">
                   <InfoCircleOutlined />
@@ -702,7 +702,7 @@ function EmployeeManage() {
             onFinish={handleFinishAdd}
           >
             <Row gutter={[10, 0]}>
-              <Col xl={24} lg={24} md={24} sm={24} xs={24}>
+              <Col span={24}>
                 <Divider orientation="left" orientationMargin="0">
                   <Space direction="horizontal">
                     <InfoCircleOutlined />
@@ -893,7 +893,7 @@ function EmployeeManage() {
             </Row>
 
             <Row gutter={[10, 0]}>
-              <Col xl={24} lg={24} md={24} sm={24} xs={24}>
+              <Col span={24}>
                 <Divider orientation="left" orientationMargin="0">
                   <Space direction="horizontal">
                     <InfoCircleOutlined />
