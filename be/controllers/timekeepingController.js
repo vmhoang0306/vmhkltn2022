@@ -22,11 +22,11 @@ export const createTimekeeping = async (req, res) => {
       });
 
       if (!check) {
+        check = false;
         const newTimekeeping = new ITimekeeping({
           username,
           ischeck: false,
           isvacation: false,
-          issalary: false,
           hour: 0,
           date: Utils.date.formatDateInput(
             new Date(today.getFullYear(), today.getMonth(), i)
@@ -59,8 +59,8 @@ export const checkTimekeeping = async (req, res) => {
     const { username, hour, date } = req.body;
 
     await ITimekeeping.findOneAndUpdate(
-      { username },
-      { ischeck: true, issalary: true, hour, date }
+      { $and: [{ username }, { date }] },
+      { ischeck: true, hour }
     );
 
     res.status(200).json({

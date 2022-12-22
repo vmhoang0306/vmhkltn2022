@@ -6,7 +6,6 @@ const TimekeepingSchema = new Schema(
     username: { type: String, require: true },
     ischeck: { type: Boolean, require: true },
     isvacation: { type: Boolean, require: true },
-    issalary: { type: Boolean, require: true },
     hour: { type: Number, require: true },
     date: { type: Date, require: true },
   },

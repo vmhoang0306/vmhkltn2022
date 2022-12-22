@@ -9,6 +9,7 @@ import { AlertUI } from "../../../components/general/AlertUI";
 import { ModalConfirm } from "../../../components/modules";
 import { ApiConstants } from "../../../constant";
 import { Notify } from "../../../helpers";
+import { IEmployeeInfo } from "../../../models";
 import { Utils } from "../../../utils";
 import SelectBase from "../../common/components/SelectBase";
 import LoadingFullWidth from "../../common/LoadingFullWidth";
@@ -19,11 +20,15 @@ function TimekeepingManage() {
   const [formaddvacation] = Form.useForm();
   const today = new Date();
   const authInfo = useContext(AuthContext);
+  const [lstApprovedUser, setLstApprovedUser] = useState<any>();
   const [lstHistory, setLstHistory] = useState<any>();
   const [requesting, setRequesting] = useState(false);
 
   const [showAddVacation, setShowAddVacation] = useState(false);
   const [requestingAddVacation, setRequestingAddVacation] = useState(false);
+  
+  const [showAddVacationHistory, setShowAddVacationHistory] = useState(false);
+  const [requestingAddVacationHistory, setRequestingAddVacationHistory] = useState(false);
 
   useEffect(() => {
     if (showAddVacation) {
@@ -44,8 +49,30 @@ function TimekeepingManage() {
     const url = ApiConstants.timekeeping.getlisttimekeeping;
     const params = { username: authInfo.username };
 
+    const urlInfo = ApiConstants.employeeinfo.getbyid;
+    const urlApprove = ApiConstants.vacation.getapproveduser;
+
     setRequesting(true);
     const res: any = await axios.get(url, { params });
+    const info: any = await axios.get(urlInfo, { params });
+
+    if (info.data.status === "success") {
+      const department = info.data.data.department._id;
+      const params = { department: department };
+      const appUser: any = await axios.get(urlApprove, { params });
+
+      if (appUser.data.status === "success") {
+        setLstApprovedUser(formatDataApprovedUser(appUser.data.data));
+      }
+    } else {
+      console.log(info.data.message);
+      Notify.error(
+        "",
+        info.data.message && info.status === 200
+          ? info.data.message
+          : "Xảy ra lỗi!"
+      );
+    }
     setRequesting(false);
 
     if (res.data.status === "success") {
@@ -113,6 +140,17 @@ function TimekeepingManage() {
     },
   ];
 
+  const formatDataApprovedUser = (data: IEmployeeInfo[]) => {
+    let results: { value: any; title: any }[] = [];
+    data.forEach((item) => {
+      results.push({
+        value: item._id,
+        title: item.username + "-" + item.fullname,
+      });
+    });
+    return results;
+  };
+
   const CalculateTimekeeping = () => {
     const hour = Utils.date.getHour(today);
     const minute = Utils.date.getMinute(today);
@@ -149,7 +187,42 @@ function TimekeepingManage() {
   const handleConfirmAddVacation = () => {
     formaddvacation.submit();
   };
-  const handleFinishAddVacation = async () => {};
+  const handleFinishAddVacation = async (e: any) => {
+    const url = ApiConstants.vacation.create;
+    const data: any = {
+      username: authInfo.username,
+      fromdate: Utils.date.formatDateInput(e.fromdate),
+      todate: Utils.date.formatDateInput(e.todate),
+      reason: e.reason,
+      approveduser: e.approveduser,
+    }
+
+    setRequestingAddVacation(true);
+    const res: any = await axios.post(url, data);
+    setRequestingAddVacation(false);
+
+    if (res.data.data > 0) {
+      Notify.success(
+        "",
+        res.data.message
+          ? res.data.message
+          : "Đăng ký nghỉ phép thành công!"
+      );
+      handleCancelAddVacation();
+    } else {
+      console.log(res.data.message);
+      Notify.error(
+        "",
+        res.data.message && res.status === 200
+          ? res.data.message
+          : "Xảy ra lỗi!"
+      );
+    }
+  };
+
+  const handleVacationHistory = () => {
+    setShowAddVacationHistory(true);
+  };
 
   return !requesting ? (
     <React.Fragment>
@@ -252,8 +325,8 @@ function TimekeepingManage() {
                 className="me-1"
                 color="warning"
                 icon={<FileDoneOutlined />}
-                text="Danh sách đăng ký nghỉ phép"
-                onClick={handleVacation}
+                text="Lịch sử đăng ký nghỉ phép"
+                onClick={handleVacationHistory}
               />
 
               <ButtonUI
@@ -349,6 +422,25 @@ function TimekeepingManage() {
                     format="DD/MM/YYYY"
                     placeholder="Chọn ngày kết thúc nghỉ phép"
                     className="w-100 min-width-100px"
+                  />
+                </Form.Item>
+              </Col>
+
+              <Col span={24}>
+                <Form.Item
+                  name="approveduser"
+                  label={<TextUI strong text="Người duyệt" />}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Không được bỏ trống trường này!",
+                    },
+                  ]}
+                >
+                  <SelectBase
+                    isShowChooseAll={false}
+                    placeholder="Chọn người duyệt"
+                    data={lstApprovedUser}
                   />
                 </Form.Item>
               </Col>

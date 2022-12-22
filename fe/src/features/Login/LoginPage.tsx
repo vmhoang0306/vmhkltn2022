@@ -34,11 +34,16 @@ function LoginPage() {
     const res: any = await axios.post(url, data);
 
     if (res.data.status === "success") {
-      
       authInfo.login(data.username);
       history.push(PAGE_URL.EMPLOYEEINFO.INFO);
     } else {
-      Notify.error("", res.data.message ? res.data.message : "Xảy ra lỗi!");
+      console.log(res.data.message);
+      Notify.error(
+        "",
+        res.data.message && res.status === 200
+          ? res.data.message
+          : "Xảy ra lỗi!"
+      );
       setRequesting(false);
     }
   };

@@ -351,7 +351,13 @@ function EmployeeManage() {
       handleSearch();
       handleCancelDelete();
     } else {
-      Notify.error("", res.data.message ? res.data.message : "Xảy ra lỗi!");
+      console.log(res.data.message);
+      Notify.error(
+        "",
+        res.data.message && res.status === 200
+          ? res.data.message
+          : "Xảy ra lỗi!"
+      );
     }
   };
 
@@ -377,7 +383,13 @@ function EmployeeManage() {
       handleSearch();
       handleCancelRestore();
     } else {
-      Notify.error("", res.data.message ? res.data.message : "Xảy ra lỗi!");
+      console.log(res.data.message);
+      Notify.error(
+        "",
+        res.data.message && res.status === 200
+          ? res.data.message
+          : "Xảy ra lỗi!"
+      );
     }
   };
 
@@ -403,7 +415,13 @@ function EmployeeManage() {
     if (res.data.status === "success") {
       setLstData(res.data.data);
     } else {
-      Notify.error("", res.data.message ? res.data.message : "Xảy ra lỗi!");
+      console.log(res.data.message);
+      Notify.error(
+        "",
+        res.data.message && res.status === 200
+          ? res.data.message
+          : "Xảy ra lỗi!"
+      );
     }
   };
 

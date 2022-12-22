@@ -12,6 +12,7 @@ import positionRouter from "./routes/positionRouter.js";
 import storeRouter from "./routes/storeRouter.js";
 import transferRouter from "./routes/transferRoute.js";
 import timekeepingRouter from "./routes/timekeepingRoute.js";
+import vacationRouter from "./routes/vacationRoute.js";
 
 dotenv.config();
 
@@ -31,6 +32,7 @@ app.use((_req, res, next) => {
   next();
 });
 
+app.use("/api/vacation", vacationRouter);
 app.use("/api/timekeeping", timekeepingRouter);
 app.use("/api/transfer", transferRouter);
 app.use("/api/employeeinfo", employeeInfoRouter);

@@ -1,12 +1,16 @@
+import ITimekeeping from "../models/timekeeping.js";
+import IEmployeeInfo from "../models/employeeInfo.js";
+import IVacationApproval from "../models/vacationApproval.js";
 import IVacationRequirement from "../models/vacationRequirement.js";
 
 export const getApprovedUser = async (req, res) => {
-  const { department } = req.query.department;
+  const department = req.query.department;
 
   try {
-    const data = IEmployeeInfo.find({
-      $or: [
+    const data = await IEmployeeInfo.find({
+      $and: [
         { department },
+        { isactive: true },
         {
           position: {
             $in: [
@@ -33,14 +37,23 @@ export const getApprovedUser = async (req, res) => {
 
 export const createVacationRequirement = async (req, res) => {
   try {
-    const { username, fromdate, todate, note, approveduser } = req.body;
+    const { username, fromdate, todate, reason, approveduser } = req.body;
     const newItem = new IVacationRequirement({
       username,
       fromdate,
       todate,
       status: 0,
-      note,
+      reason,
     });
+
+    if (todate < fromdate) {
+      res.status(200).json({
+        data: 0,
+        status: "error",
+        message: "Vui lòng chọn ngày kết thúc lớn hơn ngày bắt đầu!",
+      });
+    }
+
     const newVacationRequirement = await newItem.save();
 
     const newApprove = new IVacationApproval({
@@ -58,7 +71,7 @@ export const createVacationRequirement = async (req, res) => {
       message: "Tạo đăng ký nghỉ phép thành công!",
     });
   } catch (e) {
-    res.status(400).json({ status: "error", message: error.message });
+    res.status(400).json({ status: "error", message: e.message });
   }
 };
 
@@ -69,10 +82,26 @@ export const approvedVacation = async (req, res) => {
       { vacationrequirement },
       { status, note, appeoveduser, approveddate: now() }
     );
-    await IVacationRequirement.findOneAndUpdate(
+    const detail = await IVacationRequirement.findOneAndUpdate(
       { _id: vacationrequirement },
       { status }
     );
+
+    if (status === 1) {
+      await ITimekeeping.findOneAndUpdate(
+        {
+          $and: [
+            { username: detail.username },
+            { date: { $gte: Utils.date.formatDateInput(detail.fromdate) } },
+            { date: { $lt: Utils.date.nextdate(detail.todate) } },
+          ],
+        },
+        {
+          isvacation: true,
+          hour: 8,
+        }
+      );
+    }
 
     res.status(200).json({
       data: 1,

@@ -26,13 +26,13 @@ import TimekeepingPage from "./features/Timekeeping/Pages/TimekeepingPage";
 import TimekeepingManagePage from "./features/TimekeepingManage/Pages/TimekeepingManagePage";
 import TransferPage from "./features/Transfer/Pages/TransferPage";
 import TransferApprovalManage from "./features/TransferApproval/Components/TransferApprovalManage";
-import VacationPage from "./features/Vacation/Pages/VacationPage";
 import VacationApprovalPage from "./features/VacationApproval/Pages/TransferApprovalPage";
 import { Utils } from "./utils";
 
 function App() {
   const history = useHistory();
   const [isTimekeeping, setIsTimekeeping] = useState(false);
+  const [isDone, setIsDone] = useState(false);
 
   useEffect(() => {
     if (checkCookie()) {
@@ -84,6 +84,7 @@ function App() {
 
     if (res.data.status === "success") {
       setIsTimekeeping(res.data.data[0].ischeck);
+      setIsDone(true);
     }
   };
 
@@ -99,7 +100,7 @@ function App() {
     setCookie(uid, true);
     getIsTimekeeping();
     history.push(PAGE_URL.EMPLOYEEINFO.INFO);
-    window.location.reload();
+    // window.location.reload();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -135,11 +136,6 @@ function App() {
         exact
         path={PAGE_URL.CHANGEPASS}
         component={withRouter(ChangePassPage)}
-      />
-      <Route
-        exact
-        path={PAGE_URL.VACATION.VACATION}
-        component={withRouter(VacationPage)}
       />
       <Route
         exact
