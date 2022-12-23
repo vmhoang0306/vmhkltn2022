@@ -23,6 +23,9 @@ export const UtilsRoute = {
       case PAGE_URL.TIMEKEEPING.TIMEKEEPING:
         breadcrumbs.push({ path: "", breadcrumbName: "Chấm công" });
         break;
+      case PAGE_URL.VACATION.MANAGE:
+        breadcrumbs.push({ path: "", breadcrumbName: "Quản lý đăng ký nghỉ phép" });
+        break;
       case PAGE_URL.TRANSFER.TRANSFER:
         breadcrumbs.push({ path: "", breadcrumbName: "Thuyên chuyển" });
         break;

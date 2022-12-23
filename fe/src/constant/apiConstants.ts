@@ -27,14 +27,18 @@ export const ApiConstants = {
   },
 
   timekeeping: {
-    getlisttimekeeping: "/api/timekeeping/getlisttimekeeping",
+    getlist: "/api/timekeeping/getlist",
+    getlistformanager: "/api/timekeeping/getlistformanager",
     create: "/api/timekeeping/create",
     check: "/api/timekeeping/check",
+    updatehour: "/api/timekeeping/updatehour",
   },
 
   vacation: {
-    getapproveduser: '/api/vacation/getapproveduser',
-    create: '/api/vacation/create',
-    approve: '/api/vacation/approve',
-  }
+    getlist: "api/vacation/getlist",
+    getapproveduser: "/api/vacation/getapproveduser",
+    create: "/api/vacation/create",
+    approve: "/api/vacation/approve",
+    delete: "/api/vacation/delete",
+  },
 };

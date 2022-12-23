@@ -69,7 +69,7 @@ function MenuComponent(props) {
 
   const menuTransfer = [
     getItem(
-      <Link to={PAGE_URL.TRANSFER.TRANSFER}>Thuyên chuyển</Link>,
+      <Link to={PAGE_URL.TRANSFER.TRANSFER}>Đăng ký thuyên chuyển</Link>,
       "transfer/transfer",
       <SyncOutlined />,
       null,
@@ -79,23 +79,6 @@ function MenuComponent(props) {
       <Link to={PAGE_URL.TRANSFER.MANAGE}>Quản lý thuyên chuyển</Link>,
       "transfer/manage",
       <FileSyncOutlined />,
-      null,
-      null
-    ),
-  ];
-
-  const menuVacation = [
-    getItem(
-      <Link to={PAGE_URL.VACATION.VACATION}>Đăng ký nghỉ phép</Link>,
-      "vacation/vacation",
-      <EditOutlined />,
-      null,
-      null
-    ),
-    getItem(
-      <Link to={PAGE_URL.VACATION.MANAGE}>Quản lý đăng ký nghỉ phép</Link>,
-      "vacation/manage",
-      <FileTextOutlined />,
       null,
       null
     ),
@@ -124,10 +107,10 @@ function MenuComponent(props) {
       null
     ),
     getItem(
-      <span className="me-2">Quản lý nghỉ phép</span>,
+      <Link to={PAGE_URL.VACATION.MANAGE}>Quản lý đăng ký nghỉ phép</Link>,
       "vacation",
       <EditOutlined />,
-      menuVacation,
+      null,
       null
     ),
     getItem(

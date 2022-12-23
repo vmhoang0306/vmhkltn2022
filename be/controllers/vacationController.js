@@ -3,6 +3,31 @@ import IEmployeeInfo from "../models/employeeInfo.js";
 import IVacationApproval from "../models/vacationApproval.js";
 import IVacationRequirement from "../models/vacationRequirement.js";
 
+export const getVacationRequirement = async (req, res) => {
+  const username = req.query.username;
+
+  try {
+    const data = await IVacationRequirement.find({ username: username }).sort({
+      _id: -1,
+    });
+
+    if (data === null || data.length === 0) {
+      return res.status(200).json({
+        status: "error",
+        message: "Chưa có lịch sử đăng ký phép!",
+      });
+    }
+
+    res.status(200).json({
+      status: "success",
+      data: data,
+      message: "Lấy lịch sử đăng ký phép thành công!",
+    });
+  } catch (e) {
+    return res.status(400).json({ status: "error", message: e.message });
+  }
+};
+
 export const getApprovedUser = async (req, res) => {
   const department = req.query.department;
 
@@ -37,9 +62,11 @@ export const getApprovedUser = async (req, res) => {
 
 export const createVacationRequirement = async (req, res) => {
   try {
-    const { username, fromdate, todate, reason, approveduser } = req.body;
+    const { username, vacationtype, fromdate, todate, reason, approveduser } =
+      req.body;
     const newItem = new IVacationRequirement({
       username,
+      vacationtype,
       fromdate,
       todate,
       status: 0,
@@ -107,6 +134,23 @@ export const approvedVacation = async (req, res) => {
       data: 1,
       status: "success",
       message: "Duyệt đăng ký nghỉ phép thành công!",
+    });
+  } catch (e) {
+    return res.status(400).json({ status: "error", message: e.message });
+  }
+};
+
+export const deleteVacation = async (req, res) => {
+  const { _id } = req.body;
+
+  try {
+    await IVacationRequirement.findOneAndRemove({ _id });
+    await IVacationApproval.findOneAndRemove({ vacationrequirement: _id });
+
+    res.status(200).json({
+      data: 1,
+      status: "success",
+      message: "Đã hủy đăng ký nghỉ phép!",
     });
   } catch (e) {
     return res.status(400).json({ status: "error", message: e.message });

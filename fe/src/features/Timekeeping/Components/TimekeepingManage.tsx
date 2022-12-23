@@ -1,4 +1,8 @@
-import { ClockCircleOutlined, FileDoneOutlined } from "@ant-design/icons";
+import {
+  ClockCircleOutlined,
+  DeleteOutlined,
+  FileDoneOutlined,
+} from "@ant-design/icons";
 import { Col, DatePicker, Form, Input, Row, Space, Table, Tag } from "antd";
 import axios from "axios";
 import dayjs from "dayjs";
@@ -21,14 +25,29 @@ function TimekeepingManage() {
   const today = new Date();
   const authInfo = useContext(AuthContext);
   const [lstApprovedUser, setLstApprovedUser] = useState<any>();
-  const [lstHistory, setLstHistory] = useState<any>();
+  const [lstTimekeepingHistory, setLstTimekeepingHistory] = useState<any[]>([]);
   const [requesting, setRequesting] = useState(false);
 
   const [showAddVacation, setShowAddVacation] = useState(false);
   const [requestingAddVacation, setRequestingAddVacation] = useState(false);
-  
-  const [showAddVacationHistory, setShowAddVacationHistory] = useState(false);
-  const [requestingAddVacationHistory, setRequestingAddVacationHistory] = useState(false);
+
+  const [isGetHistory, setIsGetHistory] = useState(false);
+  const [showVacationHistory, setShowVacationHistory] = useState(false);
+  const [requestingVacationHistory, setRequestingVacationHistory] =
+    useState(false);
+  const [lstVacationHistory, setLstVacationHistory] = useState<any>();
+
+  const [idDeleteVacation, setIdDeleteVacation] = useState<string>();
+  const [showDeleteVacationHistory, setShowDeleteVacationHistory] =
+    useState(false);
+  const [requestingDeleteVacationHistory, setRequestingDeleteVacationHistory] =
+    useState(false);
+
+  useEffect(() => {
+    if (isGetHistory) {
+      setShowVacationHistory(true);
+    }
+  }, [isGetHistory]);
 
   useEffect(() => {
     if (showAddVacation) {
@@ -46,16 +65,13 @@ function TimekeepingManage() {
   }, []);
 
   const initData = async () => {
-    const url = ApiConstants.timekeeping.getlisttimekeeping;
     const params = { username: authInfo.username };
 
     const urlInfo = ApiConstants.employeeinfo.getbyid;
     const urlApprove = ApiConstants.vacation.getapproveduser;
 
     setRequesting(true);
-    const res: any = await axios.get(url, { params });
     const info: any = await axios.get(urlInfo, { params });
-
     if (info.data.status === "success") {
       const department = info.data.data.department._id;
       const params = { department: department };
@@ -73,10 +89,16 @@ function TimekeepingManage() {
           : "Xảy ra lỗi!"
       );
     }
+    getLstTimekeeping();
     setRequesting(false);
+  };
 
+  const getLstTimekeeping = async () => {
+    const params = { username: authInfo.username };
+    const url = ApiConstants.timekeeping.getlist;
+    const res: any = await axios.get(url, { params });
     if (res.data.status === "success") {
-      setLstHistory(res.data.data);
+      setLstTimekeepingHistory(res.data.data);
     } else {
       console.log(res.data.message);
       Notify.error(
@@ -85,12 +107,11 @@ function TimekeepingManage() {
           ? res.data.message
           : "Xảy ra lỗi!"
       );
-      setRequesting(false);
     }
   };
 
   //giờ bắt đầu chấm công
-  const STARTTIME = 8;
+  // const STARTTIME = 8;
   //giờ kết thúc chấm công
   const ENDTIME = 17;
 
@@ -123,11 +144,15 @@ function TimekeepingManage() {
           <>
             {new Date(record.date).getDay() === 0 ? (
               ""
-            ) : record.ischeck ? (
-              <Tag color="success">Đã chấm công</Tag>
-            ) : (
-              <Tag color="error">Không chấm công</Tag>
-            )}
+              ) : record.isvacation ? (
+                <Tag color="success">Đã đăng ký nghỉ phép</Tag>
+              ) : record.ischeck ? (
+                <Tag color="success">Đã chấm công</Tag>
+              ) : record.hour > 0 ? (
+                <Tag color="warning">Quản lý kéo công</Tag>
+              ) : (
+                <Tag color="error">Không chấm công</Tag>
+              )}
           </>
         );
       },
@@ -137,6 +162,93 @@ function TimekeepingManage() {
       dataIndex: "hour",
       key: "hour",
       width: 125,
+    },
+  ];
+
+  const columnsVacation = [
+    {
+      title: <TextUI strong text="STT" />,
+      dataIndex: "index",
+      key: "index",
+      render: (_text: string, _record: any, index: any) => {
+        return index + 1;
+      },
+      width: 60,
+    },
+    {
+      title: <TextUI strong text="Loại phép" />,
+      dataIndex: "vacationtype",
+      key: "vacationtype",
+      render: (_text: string, record: any) => {
+        return (
+          <>
+            {record.vacationtype === 1 && (
+              <Tag color="blue">Phép thường niên</Tag>
+            )}
+            {record.vacationtype === 2 && (
+              <Tag color="pink">Phép không lương</Tag>
+            )}
+          </>
+        );
+      },
+    },
+    {
+      title: <TextUI strong text="Từ ngày" />,
+      dataIndex: "fromdate",
+      key: "fromdate",
+      render: (_text: string, record: any) => {
+        return <TextUI text={Utils.date.formatDate(record.fromdate)!} />;
+      },
+    },
+    {
+      title: <TextUI strong text="Đến ngày" />,
+      dataIndex: "fromdate",
+      key: "fromdate",
+      render: (_text: string, record: any) => {
+        return <TextUI text={Utils.date.formatDate(record.todate)!} />;
+      },
+    },
+    {
+      title: <TextUI strong text="Lý do" />,
+      dataIndex: "reason",
+      key: "reason",
+    },
+    {
+      title: <TextUI strong text="Trạng thái" />,
+      dataIndex: "status",
+      key: "status",
+      render: (_text: string, record: any) => {
+        return (
+          <>
+            {record.status === 0 && <Tag color="warning">Chờ duyệt</Tag>}
+            {record.status === 1 && <Tag color="success">Đã duyệt</Tag>}
+            {record.status === -1 && <Tag color="error">Từ chối</Tag>}
+          </>
+        );
+      },
+    },
+    {
+      title: <TextUI strong text="#" />,
+      dataIndex: "#",
+      key: "#",
+      render: (_text: string, record: any) => {
+        return (
+          <>
+            {record.status === 0 && (
+              <ButtonUI
+                color="danger"
+                icon={<DeleteOutlined />}
+                onClick={() => {
+                  setIdDeleteVacation(record._id);
+                  setShowDeleteVacationHistory(true);
+                }}
+              />
+            )}
+          </>
+        );
+      },
+      align: "right" as "right",
+      width: 60,
     },
   ];
 
@@ -154,7 +266,7 @@ function TimekeepingManage() {
   const CalculateTimekeeping = () => {
     const hour = Utils.date.getHour(today);
     const minute = Utils.date.getMinute(today);
-    if (hour <= ENDTIME && hour >= STARTTIME) {
+    if (hour <= ENDTIME) {
       const time = hour + minute / 60;
       let timekeeping;
 
@@ -169,10 +281,36 @@ function TimekeepingManage() {
     return 0;
   };
 
+  const CalculateTotal = () => {
+    let total: number = 0;
+    lstTimekeepingHistory.forEach((item: any) => {
+      if (new Date(item.date).getDay() !== 0) {
+        total += 8;
+      }
+    });
+
+    return total;
+  };
+
+  const CalculateChecked = () => {
+    let checked: number = 0;
+    lstTimekeepingHistory.forEach((item: any) => {
+      if (
+        new Date(item.date).getDay() !== 0 &&
+        (item.ischeck || item.isvacation)
+      ) {
+        checked += item.hour;
+      }
+    });
+
+    return checked.toFixed(2);
+  };
+
   const handleTimekeeping = () => {
     form.submit();
   };
   const handleFinish = async () => {
+    getLstTimekeeping();
     authInfo.checkTimekeeping(authInfo.username, CalculateTimekeeping(), today);
   };
 
@@ -191,11 +329,12 @@ function TimekeepingManage() {
     const url = ApiConstants.vacation.create;
     const data: any = {
       username: authInfo.username,
+      vacationtype: e.vacationtype,
       fromdate: Utils.date.formatDateInput(e.fromdate),
       todate: Utils.date.formatDateInput(e.todate),
       reason: e.reason,
       approveduser: e.approveduser,
-    }
+    };
 
     setRequestingAddVacation(true);
     const res: any = await axios.post(url, data);
@@ -204,9 +343,7 @@ function TimekeepingManage() {
     if (res.data.data > 0) {
       Notify.success(
         "",
-        res.data.message
-          ? res.data.message
-          : "Đăng ký nghỉ phép thành công!"
+        res.data.message ? res.data.message : "Đăng ký nghỉ phép thành công!"
       );
       handleCancelAddVacation();
     } else {
@@ -220,8 +357,62 @@ function TimekeepingManage() {
     }
   };
 
-  const handleVacationHistory = () => {
-    setShowAddVacationHistory(true);
+  const handleCancelVacationHistory = () => {
+    setShowVacationHistory(false);
+    setRequestingVacationHistory(false);
+    setIsGetHistory(false);
+  };
+  const handleVacationHistory = async () => {
+    const url = ApiConstants.vacation.getlist;
+    const params = { username: authInfo.username };
+
+    setRequestingVacationHistory(true);
+    const res: any = await axios.get(url, { params });
+    setRequestingVacationHistory(false);
+
+    if (res.data.status === "success") {
+      setIsGetHistory(true);
+      setLstVacationHistory(res.data.data);
+    } else {
+      console.log(res.data.message);
+      Notify.error(
+        "",
+        res.data.message && res.status === 200
+          ? res.data.message
+          : "Xảy ra lỗi!"
+      );
+    }
+  };
+
+  const handleCancelDeleteVacationHistory = () => {
+    setShowDeleteVacationHistory(false);
+    setRequestingDeleteVacationHistory(false);
+    setIdDeleteVacation(undefined);
+  };
+  const handleConfirmDeleteVacationHistory = async () => {
+    const url = ApiConstants.vacation.delete;
+    const data = { _id: idDeleteVacation };
+
+    setRequestingDeleteVacationHistory(true);
+    const res: any = await axios.post(url, data);
+    setRequestingDeleteVacationHistory(false);
+
+    if (res.data.status === "success") {
+      Notify.success(
+        "",
+        res.data.message ? res.data.message : "Đã hủy đăng ký phép!"
+      );
+      handleVacationHistory();
+      handleCancelDeleteVacationHistory();
+    } else {
+      console.log(res.data.message);
+      Notify.error(
+        "",
+        res.data.message && res.status === 200
+          ? res.data.message
+          : "Xảy ra lỗi!"
+      );
+    }
   };
 
   return !requesting ? (
@@ -313,9 +504,10 @@ function TimekeepingManage() {
                   level={1}
                 />
                 <TextUI
+                  strong
                   italic
                   className="d-flex justify-content-center txt-success"
-                  text={`Tổng số giờ công: 7/8.0`}
+                  text={`Tổng số giờ công: ${CalculateChecked()}/${CalculateTotal()}`}
                 />
               </Space>
             </Space>
@@ -327,6 +519,7 @@ function TimekeepingManage() {
                 icon={<FileDoneOutlined />}
                 text="Lịch sử đăng ký nghỉ phép"
                 onClick={handleVacationHistory}
+                loading={requestingVacationHistory}
               />
 
               <ButtonUI
@@ -338,7 +531,7 @@ function TimekeepingManage() {
 
             <Table
               className="w-100 mt-3"
-              dataSource={lstHistory}
+              dataSource={lstTimekeepingHistory}
               pagination={false}
               scroll={{ y: 360 }}
               columns={columns}
@@ -464,6 +657,43 @@ function TimekeepingManage() {
               </Col>
             </Row>
           </Form>
+        </React.Fragment>
+      </ModalConfirm>
+
+      <ModalConfirm
+        divider
+        visible={showVacationHistory}
+        setVisible={setShowVacationHistory}
+        title={"Lịch sử đăng ký nghỉ phép"}
+        showButtonConfirm={false}
+        textCancel="Trở lại"
+        handleCancel={handleCancelVacationHistory}
+        width={1024}
+      >
+        <React.Fragment>
+          <Table
+            className="w-100 mt-3"
+            dataSource={lstVacationHistory}
+            pagination={false}
+            scroll={{ y: 480 }}
+            columns={columnsVacation}
+            rowKey="index"
+          />
+        </React.Fragment>
+      </ModalConfirm>
+
+      <ModalConfirm
+        divider
+        visible={showDeleteVacationHistory}
+        setVisible={setShowDeleteVacationHistory}
+        title={"Lịch sử đăng ký nghỉ phép"}
+        loadingBtnConfirm={requestingDeleteVacationHistory}
+        handleConfirm={handleConfirmDeleteVacationHistory}
+        handleCancel={handleCancelDeleteVacationHistory}
+        width={600}
+      >
+        <React.Fragment>
+          <TextUI text="Xóa yêu cầu đăng ký nghỉ phép!" />
         </React.Fragment>
       </ModalConfirm>
     </React.Fragment>

@@ -397,7 +397,7 @@ function EmployeeManage() {
     form.submit();
   };
 
-  const handleFinish = async (e: any) => {
+  const handleFinish = async (e: IParamsSearchList) => {
     const url = ApiConstants.employeeinfo.search;
     const params: IParamsSearchList = {
       keysearch: e.keysearch,

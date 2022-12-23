@@ -1,3 +1,4 @@
+import IEmployeeInfo from "../models/employeeInfo.js";
 import ITimekeeping from "../models/timekeeping.js";
 import { Utils } from "../utils/utils.js";
 
@@ -91,6 +92,104 @@ export const getListTimekeeping = async (req, res) => {
       data: data,
       status: "success",
       message: "Lấy lịch sử chấm công thành công!",
+    });
+  } catch (e) {
+    return res.status(400).json({ status: "error", message: e.message });
+  }
+};
+
+export const getListForManager = async (req, res) => {
+  const params = req.query;
+
+  try {
+    const lstUser = await IEmployeeInfo.find({
+      $and: [
+        {
+          $or: [
+            { username: { $regex: params.keysearch, $options: "$i" } },
+            { fullname: { $regex: params.keysearch, $options: "$i" } },
+          ],
+        },
+        { department: params.department },
+        { isactive: true },
+      ],
+    });
+
+    if (lstUser === undefined || lstUser === [] || lstUser.length === 0) {
+      return res
+        .status(200)
+        .json({ data: [], status: "error", message: "Danh sách rỗng!" });
+    } else {
+      let data = [];
+      for (let i = 0; i < lstUser.length; i++) {
+        const calculate = await GetCalculate(lstUser[i].username);
+
+        data.push({
+          username: lstUser[i].username,
+          fullname: lstUser[i].fullname,
+          checked: calculate.checked,
+          total: calculate.total,
+        });
+      }
+
+      await res.status(200).json({
+        data: data,
+        status: "success",
+        message: "Lấy danh sách công thành công!",
+      });
+    }
+  } catch (e) {
+    return res.status(400).json({ status: "error", message: e.message });
+  }
+};
+
+const CalculateTotal = (lstTimekeepingHistory) => {
+  let total = 0;
+  lstTimekeepingHistory.forEach((item) => {
+    if (new Date(item.date).getDay() !== 0) {
+      total += 8;
+    }
+  });
+
+  return total;
+};
+
+const CalculateChecked = (lstTimekeepingHistory) => {
+  let checked = 0;
+  lstTimekeepingHistory.forEach((item) => {
+    if (new Date(item.date).getDay() !== 0) {
+      checked += item.hour;
+    }
+  });
+
+  return checked.toFixed(2);
+};
+
+const GetCalculate = async (username) => {
+  const today = new Date();
+  const firstDate = Utils.date.firstdate(today);
+  const lst = await ITimekeeping.find({
+    $and: [
+      { username: username },
+      { date: { $gte: Utils.date.formatDateInput(firstDate) } },
+    ],
+  });
+  const checked = CalculateChecked(lst);
+  const total = CalculateTotal(lst);
+
+  return { checked: checked, total: total };
+};
+
+export const updateHourTimekeeping = async (req, res) => {
+  try {
+    const { _id } = req.body;
+
+    await ITimekeeping.findOneAndUpdate({ _id }, { hour: 8 });
+
+    res.status(200).json({
+      data: 1,
+      status: "success",
+      message: "Đã kéo công!",
     });
   } catch (e) {
     return res.status(400).json({ status: "error", message: e.message });
