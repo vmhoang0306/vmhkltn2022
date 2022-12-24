@@ -11,7 +11,7 @@ export const Utils = {
       return false;
     },
   },
-  
+
   number: {
     isNullOrEmpty: (number) => {
       try {
@@ -36,7 +36,7 @@ export const Utils = {
       const HOUR = `0${date.getHours()}`.slice(-2);
       const MINUTE = `0${date.getMinutes()}`.slice(-2);
 
-      return HOUR + ':' + MINUTE;
+      return HOUR + ":" + MINUTE;
     },
 
     formatDate: (str) => {
@@ -44,8 +44,8 @@ export const Utils = {
       const DATE = `0${date.getDate()}`.slice(-2);
       const MONTH = `0${date.getMonth() + 1}`.slice(-2);
       const YEAR = `${date.getFullYear()}`;
-      const strdate = DATE + '-' + MONTH + '-' + YEAR;
-      if (strdate === 'NaN-aN-aN') {
+      const strdate = DATE + "-" + MONTH + "-" + YEAR;
+      if (strdate === "NaN-aN-aN") {
         return undefined;
       } else {
         return strdate;
@@ -57,8 +57,8 @@ export const Utils = {
       const DATE = `0${date.getDate()}`.slice(-2);
       const MONTH = `0${date.getMonth() + 1}`.slice(-2);
       const YEAR = `${date.getFullYear()}`;
-      const strdate = YEAR + '-' + MONTH + '-' + DATE;
-      if (strdate === 'NaN-aN-aN') {
+      const strdate = YEAR + "-" + MONTH + "-" + DATE;
+      if (strdate === "NaN-aN-aN") {
         return undefined;
       } else {
         return strdate;
@@ -72,7 +72,7 @@ export const Utils = {
       const new_milis = milis_date - milis_number;
       return new Date(new_milis);
     },
-    
+
     getYear: (year) => {
       if (year === 0 || year === null || year === undefined || isNaN(year)) {
         return -1;
@@ -80,9 +80,14 @@ export const Utils = {
       let yearReturn = new Date(year);
       return yearReturn.getFullYear();
     },
-    
+
     getMonth: (month) => {
-      if (month === 0 || month === null || month === undefined || isNaN(month)) {
+      if (
+        month === 0 ||
+        month === null ||
+        month === undefined ||
+        isNaN(month)
+      ) {
         return -1;
       }
       let monthReturn = new Date(month);
@@ -123,9 +128,18 @@ export const Utils = {
     nextdate: (date) => {
       const d = new Date(date);
       const milis_date = d.getTime();
-      const milis_number =  24 * 3600 * 1000;
+      const milis_number = 24 * 3600 * 1000;
       const new_milis = milis_date + milis_number;
       return new Date(new_milis);
-    }
+    },
+
+    calDate: (d1, d2) => {
+      const date1 = new Date(d1);
+      const date2 = new Date(d2);
+
+      const ms1 = date1.getTime();
+      const ms2 = date2.getTime();
+      return Math.ceil((ms2 - ms1) / (24 * 60 * 60 * 1000));
+    },
   },
 };

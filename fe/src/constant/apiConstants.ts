@@ -24,6 +24,10 @@ export const ApiConstants = {
       create: "/api/transfer/create",
       delete: "/api/transfer/delete",
     },
+    approve: {
+      getlistformanager: "/api/transfer/getlistformanager",
+      approve: "/api/transfer/approve",
+    },
   },
 
   timekeeping: {
@@ -36,6 +40,7 @@ export const ApiConstants = {
 
   vacation: {
     getlist: "api/vacation/getlist",
+    getlistformanager: "api/vacation/getlistformanager",
     getapproveduser: "/api/vacation/getapproveduser",
     create: "/api/vacation/create",
     approve: "/api/vacation/approve",

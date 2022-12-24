@@ -1004,14 +1004,14 @@ function EmployeeManage() {
         divider
         visible={showRestore}
         setVisible={setShowRestore}
-        title={"Xóa người dùng"}
+        title={"Khôi phục người dùng"}
         handleConfirm={handleConfirmRestore}
         loadingBtnConfirm={requestingRestore}
         handleCancel={handleCancelRestore}
         width={768}
       >
         <TextUI
-          text={`Khôi phục viên ${idRestore?.username} - ${idRestore?.fullname}!`}
+          text={`Khôi phục nhân viên ${idRestore?.username} - ${idRestore?.fullname}!`}
         />
       </ModalConfirm>
     </React.Fragment>

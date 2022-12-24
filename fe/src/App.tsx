@@ -25,17 +25,19 @@ import LoginPage from "./features/Login/LoginPage";
 import TimekeepingPage from "./features/Timekeeping/Pages/TimekeepingPage";
 import TimekeepingManagePage from "./features/TimekeepingManage/Pages/TimekeepingManagePage";
 import TransferPage from "./features/Transfer/Pages/TransferPage";
-import TransferApprovalManage from "./features/TransferApproval/Components/TransferApprovalManage";
+import TransferApprovalPage from "./features/TransferApproval/Pages/TransferApprovalPage";
 import VacationApprovalPage from "./features/VacationApproval/Pages/TransferApprovalPage";
 import { Utils } from "./utils";
 
 function App() {
   const history = useHistory();
   const [isTimekeeping, setIsTimekeeping] = useState(false);
-  const [isDone, setIsDone] = useState(false);
+  const [isManager, setIsManager] = useState(false);
+  const [done, setDone] = useState(false);
 
   useEffect(() => {
     if (checkCookie()) {
+      getIsManager();
       getIsTimekeeping();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -84,7 +86,20 @@ function App() {
 
     if (res.data.status === "success") {
       setIsTimekeeping(res.data.data[0].ischeck);
-      setIsDone(true);
+    }
+  };
+
+  const getIsManager = async () => {
+    const url = ApiConstants.employeeinfo.getbyid;
+    const params = { username: getCookie() };
+    const res: any = await axios.get(url, { params });
+    const pos = res.data.data.position._id;
+    if (
+      pos !== "6388c9a5e04edff798f8f40e" &&
+      pos !== "6388c980e04edff798f8f40d" &&
+      pos !== "6388c961e04edff798f8f40c"
+    ) {
+      setIsManager(true);
     }
   };
 
@@ -98,7 +113,9 @@ function App() {
 
   const login = useCallback((uid: string) => {
     setCookie(uid, true);
+    getIsManager();
     getIsTimekeeping();
+    setDone(true);
     history.push(PAGE_URL.EMPLOYEEINFO.INFO);
     // window.location.reload();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -151,7 +168,7 @@ function App() {
       <Route
         exact
         path={PAGE_URL.TRANSFER.MANAGE}
-        component={withRouter(TransferApprovalManage)}
+        component={withRouter(TransferApprovalPage)}
       />
 
       <Route
@@ -199,6 +216,7 @@ function App() {
       <AuthContext.Provider
         value={{
           username: getCookie(),
+          ismanager: isManager,
           isTimekeeping: isTimekeeping,
           checkTimekeeping: checkTimekeeping,
           login: login,

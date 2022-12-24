@@ -7,7 +7,7 @@ import IStore from "../models/store.js";
 //GET ALL
 export const getAllEmployeeInfo = async (req, res) => {
   try {
-    const listEmployeeInfo = await IEmployeeInfo.find();
+    const listEmployeeInfo = await IEmployeeInfo.find().sort({ date: -1 });
 
     res.status(200).json({ status: "success", data: listEmployeeInfo });
   } catch (error) {
@@ -55,7 +55,7 @@ export const findByKeySearch = async (req, res) => {
       .populate("department")
       .populate("store")
       .populate("position")
-      .populate("shift");
+      .populate("shift")  ;
 
     res.status(200).json({
       status: "success",

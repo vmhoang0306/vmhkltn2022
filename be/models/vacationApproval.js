@@ -3,10 +3,10 @@ const { Schema } = mongoose;
 
 const VacationApprovalSchema = new Schema(
   {
-    vacationrequirement: {
+    vacation_requirement: {
       type: mongoose.Types.ObjectId,
       required: true,
-      ref: "department",
+      ref: "vacation_requirement",
     },
     status: { type: Number, require: true },
     note: { type: String, require: true },

@@ -31,7 +31,7 @@ export const login = async (req, res) => {
 
     res
       .status(200)
-      .json({ status: "success", message: "Đăng nhập thành công!" });
+      .json({ status: "success", data: userInfo, message: "Đăng nhập thành công!" });
   } catch (e) {
     res.status(400).json({ status: "error", message: e.message });
   }

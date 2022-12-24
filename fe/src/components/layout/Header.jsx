@@ -16,12 +16,12 @@ const HeaderComponent = () => {
   const authInfo = useContext(AuthContext);
 
   const handleCancel = () => {
-    setShowConfirm(false)
-  }
-  
+    setShowConfirm(false);
+  };
+
   const handleConfirm = () => {
-    setShowConfirm(true)
-  }
+    setShowConfirm(true);
+  };
 
   const handleLogout = () => {
     authInfo.logout(authInfo.userinfo);
@@ -54,9 +54,9 @@ const HeaderComponent = () => {
         <MenuComponent closeMenu={() => onClose()} mode="horizontal" />
       </div>
 
-        <Tooltip placement="bottomRight" title="Đăng xuất" color="#e74040">
-          <LogoutOutlined style={{ color: "#fff" }} onClick={handleConfirm} />
-        </Tooltip>
+      <Tooltip placement="bottomRight" title="Đăng xuất" color="#e74040">
+        <LogoutOutlined style={{ color: "#fff" }} onClick={handleConfirm} />
+      </Tooltip>
 
       <Drawer
         title="Menu các chức năng"
@@ -69,6 +69,7 @@ const HeaderComponent = () => {
         <MenuComponent closeMenu={() => onClose()} mode="inline" />
       </Drawer>
       <ModalConfirm
+        divider
         setVisible={setShowConfirm}
         visible={showConfirm}
         width={600}

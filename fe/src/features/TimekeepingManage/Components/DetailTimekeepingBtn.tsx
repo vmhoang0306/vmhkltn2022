@@ -62,7 +62,7 @@ function DetailTimekeepingBtn(props: IProps) {
         return (
           <>
             {new Date(record.date).getDay() === 0 ? (
-              ""
+              "--"
             ) : record.isvacation ? (
               <Tag color="success">Đã đăng ký nghỉ phép</Tag>
             ) : record.ischeck ? (
@@ -81,6 +81,17 @@ function DetailTimekeepingBtn(props: IProps) {
       dataIndex: "hour",
       key: "hour",
       width: 125,
+      render: (_text: string, record: any) => {
+        return (
+          <>
+            {new Date(record.date).getDay() === 0 ? (
+              "--"
+            ) : (
+              <TextUI text={record.hour} />
+            )}
+          </>
+        );
+      },
     },
     {
       title: <TextUI strong text="#" />,
@@ -208,7 +219,9 @@ function DetailTimekeepingBtn(props: IProps) {
         width={600}
       >
         <React.Fragment>
-          <TextUI text={`Xác nhận kéo ngày công cho nhân viên ${username}-${fullname}!`} />
+          <TextUI
+            text={`Xác nhận kéo ngày công cho nhân viên ${username}-${fullname}!`}
+          />
         </React.Fragment>
       </ModalConfirm>
     </React.Fragment>

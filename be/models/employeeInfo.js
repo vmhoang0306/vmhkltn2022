@@ -16,7 +16,6 @@ const EmployeeInfoSchema = new Schema(
     startdatework: { type: Date, require: false },
     enddatework: { type: Date, require: false },
     reason: { type: String, require: false },
-    salary: { type: Number, require: true },
     store: {
       type: mongoose.Types.ObjectId,
       required: true,

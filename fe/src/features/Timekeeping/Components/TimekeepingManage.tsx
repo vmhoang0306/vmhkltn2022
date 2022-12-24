@@ -74,7 +74,7 @@ function TimekeepingManage() {
     const info: any = await axios.get(urlInfo, { params });
     if (info.data.status === "success") {
       const department = info.data.data.department._id;
-      const params = { department: department };
+      const params = { department: department, username: authInfo.username };
       const appUser: any = await axios.get(urlApprove, { params });
 
       if (appUser.data.status === "success") {
@@ -143,16 +143,16 @@ function TimekeepingManage() {
         return (
           <>
             {new Date(record.date).getDay() === 0 ? (
-              ""
-              ) : record.isvacation ? (
-                <Tag color="success">Đã đăng ký nghỉ phép</Tag>
-              ) : record.ischeck ? (
-                <Tag color="success">Đã chấm công</Tag>
-              ) : record.hour > 0 ? (
-                <Tag color="warning">Quản lý kéo công</Tag>
-              ) : (
-                <Tag color="error">Không chấm công</Tag>
-              )}
+              "--"
+            ) : record.isvacation ? (
+              <Tag color="blue">Đã đăng ký nghỉ phép</Tag>
+            ) : record.ischeck ? (
+              <Tag color="success">Đã chấm công</Tag>
+            ) : record.hour > 0 ? (
+              <Tag color="warning">Quản lý kéo công</Tag>
+            ) : (
+              <Tag color="error">Không chấm công</Tag>
+            )}
           </>
         );
       },
@@ -162,6 +162,17 @@ function TimekeepingManage() {
       dataIndex: "hour",
       key: "hour",
       width: 125,
+      render: (_text: string, record: any) => {
+        return (
+          <>
+            {new Date(record.date).getDay() === 0 ? (
+              "--"
+            ) : (
+              <TextUI text={record.hour} />
+            )}
+          </>
+        );
+      },
     },
   ];
 
@@ -223,6 +234,11 @@ function TimekeepingManage() {
             {record.status === 0 && <Tag color="warning">Chờ duyệt</Tag>}
             {record.status === 1 && <Tag color="success">Đã duyệt</Tag>}
             {record.status === -1 && <Tag color="error">Từ chối</Tag>}
+            {!Utils.string.isNullOrEmpty(record.noteapprove) && (
+              <Space className="w-100">
+                <TextUI text={`Lý do: ${record.noteapprove}`} />
+              </Space>
+            )}
           </>
         );
       },
@@ -256,7 +272,7 @@ function TimekeepingManage() {
     let results: { value: any; title: any }[] = [];
     data.forEach((item) => {
       results.push({
-        value: item._id,
+        value: item.username,
         title: item.username + "-" + item.fullname,
       });
     });
@@ -295,10 +311,7 @@ function TimekeepingManage() {
   const CalculateChecked = () => {
     let checked: number = 0;
     lstTimekeepingHistory.forEach((item: any) => {
-      if (
-        new Date(item.date).getDay() !== 0 &&
-        (item.ischeck || item.isvacation)
-      ) {
+      if (new Date(item.date).getDay() !== 0) {
         checked += item.hour;
       }
     });
@@ -374,6 +387,7 @@ function TimekeepingManage() {
       setIsGetHistory(true);
       setLstVacationHistory(res.data.data);
     } else {
+      setLstVacationHistory([]);
       console.log(res.data.message);
       Notify.error(
         "",

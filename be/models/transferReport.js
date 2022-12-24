@@ -20,7 +20,6 @@ const TransferReportSchema = new Schema(
     },
     reason: { type: String, require: true },
     status: { type: Number, require: true },
-    isdelete: { type: Boolean, require: true },
   },
   {
     timestamps: true,

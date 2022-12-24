@@ -2,11 +2,14 @@ import ITimekeeping from "../models/timekeeping.js";
 import IEmployeeInfo from "../models/employeeInfo.js";
 import IVacationApproval from "../models/vacationApproval.js";
 import IVacationRequirement from "../models/vacationRequirement.js";
+import { Utils } from "../utils/utils.js";
 
 export const getVacationRequirement = async (req, res) => {
   const username = req.query.username;
 
   try {
+    let results = [];
+
     const data = await IVacationRequirement.find({ username: username }).sort({
       _id: -1,
     });
@@ -16,11 +19,27 @@ export const getVacationRequirement = async (req, res) => {
         status: "error",
         message: "Chưa có lịch sử đăng ký phép!",
       });
+    } else {
+      for (let i = 0; i < data.length; i++) {
+        const reason = await IVacationApproval.findOne({
+          vacation_requirement: data[i]._id,
+        });
+        results.push({
+          _id: data[i]._id,
+          username: data[i].username,
+          vacationtype: data[i].vacationtype,
+          fromdate: data[i].fromdate,
+          todate: data[i].todate,
+          status: data[i].status,
+          reason: data[i].reason,
+          noteapprove: reason === null || reason.length === 0 ? "" : reason.note,
+        });
+      }
     }
 
     res.status(200).json({
       status: "success",
-      data: data,
+      data: results,
       message: "Lấy lịch sử đăng ký phép thành công!",
     });
   } catch (e) {
@@ -30,12 +49,14 @@ export const getVacationRequirement = async (req, res) => {
 
 export const getApprovedUser = async (req, res) => {
   const department = req.query.department;
+  const username = req.query.username;
 
   try {
     const data = await IEmployeeInfo.find({
       $and: [
         { department },
         { isactive: true },
+        { username: { $nin: [username] } },
         {
           position: {
             $in: [
@@ -74,17 +95,36 @@ export const createVacationRequirement = async (req, res) => {
     });
 
     if (todate < fromdate) {
-      res.status(200).json({
+      return res.status(200).json({
         data: 0,
         status: "error",
         message: "Vui lòng chọn ngày kết thúc lớn hơn ngày bắt đầu!",
       });
     }
 
+    if (Utils.date.calDate(fromdate, todate) >= 3) {
+      return res.status(200).json({
+        data: 0,
+        status: "error",
+        message: "Không được đăng ký nghỉ phép quá 3 ngày liên tục!",
+      });
+    }
+
+    const checkExists = await IVacationRequirement.findOne({
+      $and: [{ username: username }, { status: 0 }],
+    });
+    if (checkExists !== null) {
+      return res.status(200).json({
+        data: 0,
+        status: "error",
+        message: "Tồn tại đăng ký nghỉ phép chưa được xử lý!",
+      });
+    }
+
     const newVacationRequirement = await newItem.save();
 
     const newApprove = new IVacationApproval({
-      vacationrequirement: newVacationRequirement._id,
+      vacation_requirement: newVacationRequirement._id,
       status: 0,
       note: "",
       approveduser,
@@ -104,13 +144,14 @@ export const createVacationRequirement = async (req, res) => {
 
 export const approvedVacation = async (req, res) => {
   try {
-    const { vacationrequirement, status, note, appeoveduser } = req.body;
+    const today = new Date();
+    const { vacation_requirement, status, note } = req.body;
     await IVacationApproval.findOneAndUpdate(
-      { vacationrequirement },
-      { status, note, appeoveduser, approveddate: now() }
+      { vacation_requirement },
+      { status, note, approveddate: today }
     );
     const detail = await IVacationRequirement.findOneAndUpdate(
-      { _id: vacationrequirement },
+      { _id: vacation_requirement },
       { status }
     );
 
@@ -151,6 +192,24 @@ export const deleteVacation = async (req, res) => {
       data: 1,
       status: "success",
       message: "Đã hủy đăng ký nghỉ phép!",
+    });
+  } catch (e) {
+    return res.status(400).json({ status: "error", message: e.message });
+  }
+};
+
+export const getListForManager = async (req, res) => {
+  const params = req.query;
+
+  try {
+    const approvalInfo = await IVacationApproval.find({
+      $and: [{ approveduser: params.username }],
+    }).populate("vacation_requirement");
+
+    res.status(200).json({
+      data: approvalInfo,
+      status: "success",
+      message: "Lấy đăng ký nghỉ phép thành công!",
     });
   } catch (e) {
     return res.status(400).json({ status: "error", message: e.message });

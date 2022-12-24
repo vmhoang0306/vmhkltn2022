@@ -1,7 +1,7 @@
 import {
   ClockCircleOutlined,
   EditOutlined,
-  FileDoneOutlined, FileSyncOutlined, FileTextOutlined, MenuOutlined,
+  FileDoneOutlined, FileSyncOutlined, MenuOutlined,
   ReloadOutlined,
   SearchOutlined,
   SolutionOutlined,
@@ -52,7 +52,7 @@ function MenuComponent(props) {
 
   const menuTimekeeping = [
     getItem(
-      <Link to={PAGE_URL.TIMEKEEPING.TIMEKEEPING}>Chấm công</Link>,
+      <Link to={PAGE_URL.TIMEKEEPING.TIMEKEEPING}>Chấm công/Đăng ký nghỉ phép</Link>,
       "timekeeping/timekeeping",
       <ClockCircleOutlined />,
       null,
@@ -93,7 +93,7 @@ function MenuComponent(props) {
       null
     ),
     getItem(
-      <span className="me-2">Quản lý giờ công</span>,
+      <span className="me-2">Quản lý giờ công/nghỉ phép</span>,
       "timekeeping",
       <ClockCircleOutlined />,
       menuTimekeeping,

@@ -7,9 +7,7 @@ export const getList = async (req, res) => {
   const username = req.query.username;
 
   try {
-    const results = await ITransferReport.find({
-      $and: [{ username: username }, { isdelete: false }],
-    })
+    const results = await ITransferReport.find({ username: username })
       .populate("username")
       .populate("newdepartment")
       .populate("currentdepartment");
@@ -34,18 +32,13 @@ export const createTransfer = async (req, res) => {
       newdepartment,
       reason,
       status,
-      isdelete: false,
     });
 
     const checkExists = await ITransferReport.find({
-      $and: [
-        { username: username },
-        { status: {'$nin': [-1]} },
-        { isdelete: false },
-      ],
+      $and: [{ username: username }, { status: { $nin: [-1] } }],
     });
 
-    if(checkExists.length > 0 || checkExists === null){
+    if (checkExists.length > 0 || checkExists === null) {
       return res.status(200).json({
         data: -1,
         status: "error",
@@ -77,7 +70,8 @@ export const createTransfer = async (req, res) => {
 export const deleteTransfer = async (req, res) => {
   try {
     const { _id } = req.body;
-    await ITransferReport.findOneAndUpdate({ _id: _id }, { isdelete: true });
+    await ITransferReport.findOneAndRemove({ _id: _id });
+    await ITransferApproval.findOneAndRemove({ transferreport: _id });
 
     res.status(200).json({
       data: 1,
@@ -90,16 +84,41 @@ export const deleteTransfer = async (req, res) => {
 };
 
 export const approveTransfer = async (req, res) => {
+  const today = new Date();
+
   try {
     const { _id, status, note, appeoveduser } = req.body;
     await ITransferApproval.findOneAndUpdate(
       { transferreport: _id },
-      { status, note, appeoveduser, approveddate: now() }
+      { status, note, appeoveduser, approveddate: today }
     );
 
     if (status === 1) {
       await ITransferReport.findOneAndUpdate({ _id: _id }, { status });
     }
+  } catch (e) {
+    return res.status(400).json({ status: "error", message: e.message });
+  }
+};
+
+export const getListForManager = async (req, res) => {
+  const username = req.query.username;
+
+  try {
+    const userInfo = await IEmployeeInfo.findOne({ username: username });
+
+    const approvalInfo = await ITransferReport.find({
+      newdepartment: userInfo.department,
+    })
+      .populate("username")
+      .populate("newdepartment")
+      .populate("currentdepartment");
+
+    res.status(200).json({
+      data: approvalInfo,
+      status: "success",
+      message: "Lấy danh sách thuyên chuyển thành công!",
+    });
   } catch (e) {
     return res.status(400).json({ status: "error", message: e.message });
   }

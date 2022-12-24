@@ -94,7 +94,7 @@ function TransferManage() {
       },
     },
     {
-      title: <TextUI strong text="Phòng ban" />,
+      title: <TextUI strong text="Phòng ban thuyên chuyển" />,
       key: "newdepartment",
       render: (_text: string, record: ITransfer) => {
         return <TextUI text={record.newdepartment?.departmentname!} />;
@@ -107,10 +107,9 @@ function TransferManage() {
       render: (_text: string, record: ITransfer) => {
         return (
           <>
-            {record.status === -1 && <Tag color="yellow">Từ chối</Tag>}
-            {record.status === 0 && <Tag color="yellow">Chờ duyệt</Tag>}
-            {record.status === 1 && <Tag color="yellow">Duyệt 1</Tag>}
-            {record.status === 2 && <Tag color="yellow">Duyệt 2</Tag>}
+            {record.status === -1 && <Tag color="error">Từ chối</Tag>}
+            {record.status === 0 && <Tag color="warning">Chờ duyệt</Tag>}
+            {record.status === 1 && <Tag color="success">Đã duyệt</Tag>}
           </>
         );
       },
