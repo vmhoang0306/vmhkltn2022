@@ -35,7 +35,7 @@ export const createTransfer = async (req, res) => {
     });
 
     const checkExists = await ITransferReport.find({
-      $and: [{ username: username }, { status: { $nin: [-1] } }],
+      $and: [{ username: username }, { status: 0 }],
     });
 
     if (checkExists.length > 0 || checkExists === null) {
@@ -93,9 +93,13 @@ export const approveTransfer = async (req, res) => {
       { status, note, appeoveduser, approveddate: today }
     );
 
-    if (status === 1) {
-      await ITransferReport.findOneAndUpdate({ _id: _id }, { status });
-    }
+    await ITransferReport.findOneAndUpdate({ _id: _id }, { status });
+
+    res.status(200).json({
+      data: 1,
+      status: "success",
+      message: "Đã duyệt đăng ký thuyên chuyển!",
+    });
   } catch (e) {
     return res.status(400).json({ status: "error", message: e.message });
   }
