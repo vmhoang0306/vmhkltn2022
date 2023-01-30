@@ -111,7 +111,7 @@ function LoginPage() {
                     rules={[
                       {
                         required: true,
-                        message: "Vui lòng nhập tên mật khẩu!",
+                        message: "Vui lòng nhập mật khẩu!",
                       },
                     ]}
                     className="w-100 min-width-300px"
